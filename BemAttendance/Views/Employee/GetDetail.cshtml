@@ -1,0 +1,417 @@
+﻿@model List<BEMAttendance.clientdevice>
+@using BEMAttendance.Models
+@{
+    ViewBag.Title = "设备列表";
+}
+<script src="~/Scripts/spin.min.js"></script>
+<script type="text/javascript">
+
+    var opts = {
+        lines: 13, // 花瓣数目
+        length: 20, // 花瓣长度
+        width: 10, // 花瓣宽度
+        radius: 30, // 花瓣距中心半径
+        corners: 1, // 花瓣圆滑度 (0-1)
+        rotate: 0, // 花瓣旋转角度
+        direction: 1, // 花瓣旋转方向 1: 顺时针, -1: 逆时针
+        color: '#37A7E8', // 花瓣颜色
+        speed: 1, // 花瓣旋转速度
+        trail: 60, // 花瓣旋转时的拖影(百分比)
+        shadow: false, // 花瓣是否显示阴影
+        hwaccel: false, //spinner 是否启用硬件加速及高速旋转            
+        className: 'spinner', // spinner css 样式名称
+        zIndex: 2e9, // spinner的z轴 (默认是2000000000)
+        top: '35%', // spinner 相对父容器Top定位 单位 px
+        left: '50%'// spinner 相对父容器Left定位 单位 px
+    };
+
+    var spinner = new Spinner(opts);
+
+    $(document).ready(function () {
+
+        setInterval("RefreshStatus()", 5000);
+        $("#btnRemoveBindAll").bind("click", function () {
+            removeBindAll();
+        });
+        $("#btnRemoveSingle").bind("click", function () {
+            removeBind();
+        });
+        
+    });
+    function RefreshStatus()
+    {
+        var trList = $("#tbDevice").children("tr");
+        for(var i=0;i<trList.length;i++)
+        {
+            var tdArr = trList.eq(i).find("td");  //获取所在行的列节点
+            var devCode = tdArr.eq(0).text();    //获取设备编号
+
+            $.ajax(
+                {
+                    url: "/Device/GetDeviceStatus",
+                    type: "Get",
+                    async: true,
+                    data: { deviceSN:devCode},
+                    success: function (strvalue) {
+                        if (strvalue != "null") {
+                            var strs = new Array();
+                            strs = strvalue.split(';');
+                            if (strs.length > 0) {
+                                var status = strs[0].split(':')[1];
+                                var deviceSN = "#" + strs[1].split(':')[1];
+                                var deviceTimeID = deviceSN + "time";
+                                var time = strs[2].split('#')[1];
+                                $(deviceTimeID).text(time);
+                                if (status == "0")  //离线
+                                {
+                                    $(deviceSN).html("<span  class='label label-danger'>&nbsp;&nbsp; 离线 &nbsp;&nbsp; </span>");
+                                }
+                                else if (status == "1") //在线
+                                {
+                                    $(deviceSN).html("<span  class='label label-success'>&nbsp;&nbsp; 在线 &nbsp;&nbsp; </span>");
+                                }
+                            }
+
+                        }
+                    }
+                });
+
+        }
+
+    }
+    //隐藏某项
+    function hideModal(obj)
+    {
+        $(obj).modal('hide');
+    }
+    function removeBind() {
+        var devCode = $('#devCode').val();
+        var usercode = $('#hideEmpID').val();
+        $.ajax({
+            type: "Get",
+            timeout: 15000,
+            url: "/Employee/RemoveBind?id=" + usercode + "&devCode=" + devCode,
+            beforeSend: function () {
+                $("#confirmFoot_s").hide();
+                var target = $("#loadingDiv_s").get(0);
+                spinner.spin(target);
+            },
+            success: function (status) {
+                if (status == "OK") {
+                    spinner.spin();
+                    $("#confirmFoot_s").show();
+                    window.location.reload(true);
+                }
+                else {
+                    $("#confirmFoot_s").show();
+                    spinner.spin();
+                    $('#error').modal('show');
+                }
+            },
+            error: function (result) {
+                spinner.spin();
+                alert(result.responseText);
+            }
+        });
+    }
+    function removeBindAll() {
+        var usercode = $('#hideEmpID').val();
+        $.ajax({
+            type: "Get",
+            timeout:15000,
+            url: "/Employee/RemoveBindAll?id=" + usercode,
+            beforeSend: function () {
+                $("#confirmFoot").hide();
+                var target = $("#loadingDiv").get(0);
+                spinner.spin(target);
+            },
+            success: function (status) {
+                if (status == "OK") {
+                    spinner.spin();
+                    $("#confirmFoot").show();
+                    window.location.reload(true);
+                }
+                else {
+                    $("#confirmFoot").show();
+                    spinner.spin();
+                    $('#error').modal('show');
+                }
+            },
+            error: function (result) {
+                spinner.spin();
+                alert(result.responseText);
+            }
+        });
+    }
+
+    function checkBindAll() {
+        var usercode = $('#hideEmpID').val();
+        $.ajax({
+            type: "Get",
+            url: "/Employee/GetBind?id=" + usercode,
+            success: function (result) {
+                if (result == "admin") {
+                    $('#isadmin').modal('show');
+                }
+                else {
+                    showRemoveAll();
+                }
+            }
+        });
+    }
+
+    function checkBind(obj) {
+        var usercode = $('#hideEmpID').val();
+        $.ajax({
+            type: "Get",
+            url: "/Employee/GetBind?id=" + usercode,
+            success: function (result) {
+                if (result == "admin") {
+                    $('#isadmin').modal('show');
+                }
+                else {
+                    $('#devCode').val(obj);
+                    $('#confirm').modal('show');
+                }
+            }
+        });
+    }
+    function showRemoveAll()
+    {
+        $('#confirmAll').modal('show');
+    }
+    function changestatus(obj1,obj2)
+    {
+        $(obj1).text("&nbsp;&nbsp;" + obj2 + "&nbsp;&nbsp;");
+        if(obj2=='在线')
+        {
+            $(obj1).class("label label-success");
+        }
+        else
+        {
+            $(obj1).class("label label-danger");
+        }
+    }
+    function setSearch(obj)
+    {
+        var searchKey = $('#searchkey').val();
+        if (searchKey == null || searchKey == "") {
+            switch (obj) {
+                case 0:
+                    $('#searchkey').attr('placeholder', "查找全部...");
+                    break;
+                case 1:
+                    $('#searchkey').attr('placeholder', "查找设备编号...");
+                    break;
+                case 2:
+                    $('#searchkey').attr('placeholder', "查找设备名称...");
+                    break;
+                case 3:
+                    $('#searchkey').attr('placeholder', "查找设备IP...");
+                    break;
+                case 4:
+                    $('#searchkey').attr('placeholder', "查找一级部门...");
+                    break;
+                case 5:
+                    $('#searchkey').attr('placeholder', "查找设备管理员...");
+                    break;
+            }
+        }
+        $('#searchType').val(obj);
+    }
+    function uploadDialogShow() {
+        $('#uploadDialog').load("/Device/Upload");
+    }
+</script>
+<div id="confirm" class="modal fade">
+    <div class="modal-dialog" style="width: 300px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" aria-hidden="true" type="button" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>确定从该虹膜设备上移除此员工信息?</p>
+                <input type="hidden" name="devCode" id="devCode" />
+            </div>
+            <div id="loadingDiv_s"></div>
+            <div id="confirmFoot_s" class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button id="btnRemoveSingle" type="button" class="btn btn-primary" @*onclick="removeBind()"*@>确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="isadmin" class="modal fade">
+    <div class="modal-dialog" style="width: 300px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" aria-hidden="true" type="button" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>该员工已被指定为管理员，不能直接移除，请先解除该员工管理员身份</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="confirmAll" class="modal fade">
+    <div class="modal-dialog" style="width: 350px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" aria-hidden="true" type="button" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>确定把该员工从所有虹膜设备上移除?</p>
+                <input type="hidden" name="devCode" id="devCode" />
+            </div>
+            <div id="loadingDiv" style="text-align:center"></div>
+            <div id="confirmFoot" class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button id="btnRemoveBindAll" type="button" class="btn btn-primary" @*onclick="removeBindAll()"*@>确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="alertform" class="modal fade">
+
+    <div class="modal-dialog" style="width: 300px;">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" aria-hidden="true" type="button" onclick="hideModal('#alertform')">&times;</button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>该设备已绑定了虹膜注册用户，不能删除</p>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8 col-md-7 col-sm-6">
+            <div class="col-lg-3">
+                <ul class="pager" style="margin-bottom:0px;margin-top:5px;">
+                    <li class="previous"><a href="/employee">&larr; @ViewData["empName"]</a></li>
+                </ul>
+            </div>
+           @if ((VisitorRole)ViewData["VisitorRole"] == VisitorRole.Admin || (VisitorRole)ViewData["VisitorRole"] == VisitorRole.SubAdmin)
+            {
+                    <div class="col-lg-3 col-lg-pull-1">
+                        <button class="btn btn-default" onclick="checkBindAll()">移除全部</button>
+                    </div>
+                        <text>
+                            <script type="text/javascript">
+               $('#loginlink').attr('href', '/loginUI/logout');
+               $('#loginlink').text('注销');
+               $('#loginname').text('@ViewData["username"]');
+                            </script>
+                        </text>
+
+               if ((VisitorRole)ViewData["VisitorRole"] == VisitorRole.Admin)
+               {
+                    <text>
+                        <script type="text/javascript">
+                            $('#adminAdd').removeClass("hide");
+                            $('#packUpdate').removeClass("hide");
+                        </script>
+                    </text>
+               }
+
+           }
+           else
+           {
+            <script type="text/javascript">
+                  $('#loginlink').attr('href', '/loginUI/logout');
+                  $('#loginlink').text('注销');
+                  $('#loginname').text('@ViewData["username"]');
+                  $('#passwdLink').addClass("hide");
+                  $('#userSend').addClass("hide");
+                  $('#adminAdd').addClass("hide");
+                  $('#packUpdate').addClass("hide");
+            </script>
+           }
+
+                    </div>
+        <div class="col-lg-4 col-md-5 col-sm-6">
+            @{
+                var queryCondition = ViewData["requestData"] as DeviceQueryCondition;
+                var queryType = (int)queryCondition.queryType;
+            }
+            <form id="searchform" name="searchform" action="/employee/GetDetail">
+                <div class="input-group" style="display:inline">
+                    <input type="text" id="searchkey" name="searchkey" class="form-control" placeholder="查找…" maxlength="20" value="@queryCondition.searchkey" />
+                    <input type="text" class="hide form-control" id="searchType" name="searchType" value="@queryType" />
+                    <input type="text" id="hideEmpID" name="id" class="hide" value="@ViewData["empCode"]" />
+                    <button class="btn btn-primary" style="border-bottom-left-radius:0px;border-top-left-radius:0px;" onclick="document.searchform.submit();">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row" style="margin-top:10px">
+        <table id="devlist" class="table table-striped table-hover ">
+
+            <tr>
+                <th>设备编号</th>
+                <th>设备名称</th>
+                <th>IP</th>
+                <th>设备所在地</th>
+                <th>设备管理员</th>
+                <th>最后在线时间</th>
+                <th>网络状态</th>
+                <th>版本号</th>
+              @if ((VisitorRole)ViewData["VisitorRole"] != VisitorRole.Guest)
+              {
+                    <th>操作</th>
+                }
+
+            </tr>
+            <tbody id="tbDevice">
+                @{
+                    var status = "离线";
+                    if (Model == null)
+                    {
+                        return;
+                    }
+                    int i = 0;
+                    foreach (var item in Model)
+                    {
+                        status = item.DevStatus == 0 ? "离线" : "在线";
+                        <tr>
+                            <td>@item.DevCode</td>
+                            <td>@item.DevName</td>
+                            <td>@item.DevIP</td>
+                            <td>@item.DevAddress</td>
+                            <td>@item.DevManager</td>
+                            <td id="@string.Format("{0}time",item.DevCode)">@item.DevUpdateTime</td>
+                            @if (status == "离线")
+                            {
+                                <td id="@item.DevCode"><span class="label label-danger">&nbsp;&nbsp; @status &nbsp;&nbsp; </span></td>
+                            }
+                            else
+                            {
+                                <td id="@item.DevCode"><span class="label label-success">&nbsp;&nbsp; @status &nbsp;&nbsp;</span></td>
+                            }
+
+                            <td>@item.DevVersion</td>
+                           @if ((VisitorRole)ViewData["VisitorRole"] != VisitorRole.Guest)
+                            {
+                                <td><a href="javascript:void(0) " onclick="checkBind('@item.DevCode')">移除</a></td>
+                            }
+                        </tr>
+                        i++;
+                    }
+                }
+            </tbody>
+        </table>
+        @Html.Partial("PageView", ViewData["pagemodel"])
+    </div>
+</div>
+

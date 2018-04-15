@@ -1,0 +1,135 @@
+﻿@model List<BEMAttendance.Email>
+ <script type="text/javascript">
+
+     function showDialog(obj)
+     {
+         $('#emailID').val(obj);
+         $('#confirm').modal('show');
+     }
+     function removeitem() {
+         var email = $('#emailID').val();
+         $.ajax({
+             type: "Get",
+             url: "/mail/Delete?id=" + email,
+             success: function () {
+                 $('#confirm').modal('hide');
+                 window.location.reload();
+             },
+             error: function () {
+                 $('#confirm').modal('hide');
+                 $('#error').modal('show');
+             }
+
+         });
+     }
+ </script>
+<div id="confirm" class="modal fade">
+
+    <div class="modal-dialog" style="width: 300px;">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" aria-hidden="true" type="button" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>确定删除?</p>
+                <input type="hidden" name="emailID" id="emailID" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="removeitem()">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="error" class="modal fade">
+
+    <div class="modal-dialog" style="width: 300px;">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" aria-hidden="true" type="button" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>删除失败</p>
+                <input type="hidden" name="emailID" id="emailID" />
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+   <div class="row">
+       <div class="col-lg-8 col-md-7 col-sm-6">
+           @if ((bool)ViewData["isadmin"] == true)
+           {
+               <a class="btn btn-default" href="/Mail/Create">添加邮箱</a>
+               <text>
+                   <script type="text/javascript">
+               $('#loginlink').attr('href', '/loginUI/logout');
+               $('#loginlink').text('注销');
+               $('#loginname').text('@ViewData["username"]');
+                   </script>
+               </text>
+           }
+           @if ((string)ViewData["username"] == "admin")
+            {
+               <text>
+                   <script type="text/javascript">
+                       $('#adminAdd').removeClass("hide");
+                   </script>
+               </text>
+           }
+       </div>
+   </div>
+    <div class="row" style="margin-top:10px">
+        <div class="well well-sm">
+            <h5>设备状态邮箱:服务端查询每台设备在线状态并汇总成邮件发送到指定邮箱</h5>
+            <h5>断线通知邮箱:服务端实时监测设备连接状态，超过指定时间间隔连接中断，汇总成邮件发送到指定邮箱</h5>
+            <h5>指定时间:当邮箱为设备状态邮箱时，指定时间为发送邮件的时间点，当邮箱为断线通知邮箱时，指定时间为状态变化时间间隔</h5>
+        </div>
+        <table id="emailList" class="table table-striped table-hover">
+            <tr>
+               <th>邮箱地址</th>
+                <th>邮箱类型</th>
+                <th>指定时间</th>
+                <th>创建时间</th>
+                @if ((bool)ViewData["isadmin"] == true)
+                {
+                    <th>操作</th>
+                }
+            </tr>
+            <tbody id="tbEmail">
+                @{ 
+                    if(Model==null)
+                    {
+                        return;
+                    }
+                    foreach(var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Email1</td>
+                             @if(item.Type==0)
+                             {
+                                 <td>设备状态邮箱</td>
+                                 <td>@item.TimePoint</td>
+                             }
+                             else
+                             {
+                                 <td>断线通知邮箱</td>
+                                 <td>@item.TimeInterval</td>
+                             }
+                            <td>@item.CreateDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                            @if ((bool)ViewData["isadmin"] == true)
+                            {
+                                <td><a href="javascript:void(0)" onclick="showDialog('@item.Id')">删除</a></td>
+                            }
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

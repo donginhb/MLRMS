@@ -1,0 +1,110 @@
+﻿@model DeviceInfo
+
+@using BEMAttendance.Models.Params
+@using BEMAttendance.Models
+<form class="form-horizontal" method="post" action="/device/create">
+    <fieldset>
+        <legend>设备新增</legend>
+        @if ((VisitorRole)ViewData["VisitorRole"] == VisitorRole.Admin || (VisitorRole)ViewData["VisitorRole"] == VisitorRole.SubAdmin)
+        {
+            <text>
+                <script type="text/javascript">
+               $('#loginlink').attr('href', '/loginUI/logout');
+               $('#loginlink').text('注销');
+               $('#loginname').text('@ViewData["username"]');
+                </script>
+            </text>
+            if ((VisitorRole)ViewData["VisitorRole"] == VisitorRole.Admin)
+            {
+                <text>
+                    <script type="text/javascript">
+                        $('#adminAdd').removeClass("hide");
+                        $('#packUpdate').removeClass("hide");
+                    </script>
+                </text>
+            }
+        }
+        else
+        {
+            <script type="text/javascript">
+                  $('#loginlink').attr('href', '/loginUI/logout');
+                  $('#loginlink').text('注销');
+                  $('#loginname').text('@ViewData["username"]');
+                  $('#passwdLink').addClass("hide");
+                  $('#adminAdd').addClass("hide");
+                  $('#packUpdate').addClass("hide");
+            </script>
+        }
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.ValidationMessage("Title", new { @class = "text-danger" })
+            @Html.LabelFor(model => model.slaveID, htmlAttributes: new { @class = "control-label col-md-2" })
+           <div class="col-lg-10">
+               @Html.EditorFor(model=>model.slaveID, new { htmlAttributes = new { @class = "form-control" } })
+               @Html.ValidationMessageFor(model => model.slaveID, "", new { @class = "text-danger" })
+           </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.devName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-lg-10">
+                @Html.EditorFor(model => model.devName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.devName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-lg-2">设备类型</label>
+            <div class="col-lg-10">
+                @Html.DropDownList("dptName1List", null, null, new { @class = "form-control", @id = "type1" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-lg-2">设备子类型</label>
+            <div class="col-lg-10">
+                @Html.DropDownList("subList", null, null, new { @class = "form-control", @id = "subtype1" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-lg-2">串口服务器</label>
+            <div class="col-lg-10">
+                @Html.DropDownList("serialList", null, null, new { @class = "form-control", @id = "serials" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.port, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-lg-10">
+                @Html.EditorFor(model => model.port, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.port, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.note, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-lg-10">
+                @Html.TextAreaFor(model => model.note,htmlAttributes: new { @class = "form-control",@row="3" })
+                
+                @Html.ValidationMessageFor(model => model.note, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-10 col-lg-offset-2">
+                <button class="btn btn-primary" type="submit">保存</button>
+            </div> 
+        </div>
+    </fieldset>
+</form>
+<script>
+            $(function () {
+                $("#type1").change(function () {
+                    var dptName1 = $("#type1").val();
+                    if (!(dptName1 == 1 || dptName1 == 5))
+                    {
+                        $("#referID").attr("readonly", "readonly");
+                        $("#referName").attr("readonly", "readonly");
+                    }
+                    else {
+                        $("#referID").removeAttr("readonly");
+                        $("#referName").removeAttr("readonly");
+                    }
+                });
+            });
+</script>
+

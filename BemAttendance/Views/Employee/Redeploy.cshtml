@@ -1,0 +1,103 @@
+﻿@using BEMAttendance.Models
+
+@model BEMAttendance.Models.UserEx
+<form class="form-horizontal" method="post" onsubmit="geturl();">
+    <fieldset>
+        <legend>员工调动</legend>
+        @if ((VisitorRole)ViewData["VisitorRole"] == VisitorRole.Admin || (VisitorRole)ViewData["VisitorRole"] == VisitorRole.SubAdmin)
+        {
+        <text>
+            <script type="text/javascript">
+                $('#loginlink').attr('href', '/loginUI/logout');
+                $('#loginlink').text('注销');
+                $('#loginname').text('@ViewData["username"]');
+            </script>
+        </text>
+        if ((VisitorRole)ViewData["VisitorRole"] == VisitorRole.Admin)
+        {
+        <text>
+            <script type="text/javascript">
+                $('#adminAdd').removeClass("hide");
+                $('#packUpdate').removeClass("hide");
+            </script>
+        </text>
+        }
+        }
+        <div class="container-fluid">
+            <div class="col-lg-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">员工信息</div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label col-lg-3" })
+                            <div class="col-lg-9">
+                                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control",@readonly="true" } })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.UserCard, htmlAttributes: new { @class = "control-label col-lg-3" })
+                            <div class="col-lg-9">
+                                @Html.EditorFor(model => model.UserCard, new { htmlAttributes = new { @class = "form-control", @readonly = "true" } })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Department1, htmlAttributes: new { @class = "control-label col-lg-3" })
+                            <div class="col-lg-9">
+                                @Html.EditorFor(model => model.Department1, new { htmlAttributes = new { @class = "form-control", @readonly = "true" } })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Department1Code, htmlAttributes: new { @class = "control-label col-lg-3" })
+                            <div class="col-lg-9">
+                                @Html.EditorFor(model => model.Department1Code, new { htmlAttributes = new { @class = "form-control", @readonly = "true" } })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-1" style="padding-top:100px;padding-left:30px"><span class="glyphicon glyphicon-arrow-right" style="font-size:40px"></span></div>
+            <div class="col-lg-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">调动到……</div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">一级部门</label>
+                            <div class="col-lg-9">
+                                @Html.DropDownList("dptNameList",null,null, new { @class = "form-control" ,@id="droplistdtpName"})
+                            </div>
+                        </div>
+                        <div class="form-group" >
+                            <label class="control-label col-md-3">一级部门编号</label>
+                            <div class="col-lg-9">
+                                @Html.TextBox("txtDptCode", ViewData["dptCode"], new { @class = "form-control",@id="dptSelectCode",@readonly="true"})
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-lg-offset-5">
+                    <button class="btn btn-primary btn-lg" type="submit">&nbsp;&nbsp;保存&nbsp;&nbsp;</button>
+                </div>
+                <div style="text-align:center;font-size:20px;font-weight:300">
+                    @Html.ValidationMessage("Title", new { @class = "control-label text-danger" })
+                    <br />
+                </div>
+            </div>
+            
+        </div>
+        <br />
+    </fieldset>
+</form>
+<script>
+    $(function () {
+        $("#droplistdtpName").change(function () {
+            $("#dptSelectCode").val($("#droplistdtpName").val());
+        });
+    });
+    function geturl()
+    {
+        return "/Employee/Redeploy/" + $("#UserCard").val();
+    }
+</script>
+
+
+

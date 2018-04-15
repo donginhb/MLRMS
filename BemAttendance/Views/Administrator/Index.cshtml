@@ -1,0 +1,153 @@
+﻿@model List<SysAdminEx>
+@using BEMAttendance.Models
+@{
+    ViewBag.Title = "管理员列表";
+}
+<script type="text/javascript">
+    function RemoveData(obj)
+    {
+        $('#userID').val(obj);
+        $('#confirm').modal('show');
+    }
+    function DeleteUser()
+    {
+        var userID = $('#userID').val();
+        $.ajax({
+            type: "Get",
+            url: "/administrator/delete/" + userID,
+            success: function () {
+                $('#confirm').modal('hide');
+                window.location.reload();
+            }
+        });
+    }
+    function ResetPwd(obj) {
+        $('#userID').val(obj);
+        $('#pwdReset').modal('show');
+    }
+    function ResetUser() {
+        var userID = $('#userID').val();
+        $.ajax({
+            type: "Get",
+            url: "/administrator/reset/" + userID,
+            success: function (strValue) {
+                $('#pwdReset').modal('hide');
+                if (strValue == "True") {
+                    $('#msg').text("重置成功");
+                    $('#noticeInfo').modal('show');
+                }
+                else {
+                    $('#msg').text("重置失败");
+                    $('#noticeInfo').modal('show');
+                }
+            }
+        });
+    }
+</script>
+
+<div id="confirm" class="modal fade">
+    <div class="modal-dialog" style="width: 300px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" aria-hidden="true" type="button" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>确定删除?</p>
+                <input type="hidden" name="userID" id="userID" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="DeleteUser()">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="noticeInfo" class="modal fade">
+    <div class="modal-dialog" style="width: 300px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" aria-hidden="true" type="button" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p id="msg"></p>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="pwdReset" class="modal fade">
+    <div class="modal-dialog" style="width: 300px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" aria-hidden="true" type="button" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>确定要重置密码?</p>
+                <input type="hidden" name="userID" id="userID" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="ResetUser()">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8 col-md-7 col-sm-6">
+          @if ((VisitorRole)ViewData["VisitorRole"] == VisitorRole.Admin)
+            {
+                <a class="btn btn-default" href="/Administrator/create">添加管理员</a>
+                <text>
+                    <script type="text/javascript">
+               $('#loginlink').attr('href', '/loginUI/logout');
+               $('#loginlink').text('注销');
+               $('#loginname').text('@ViewData["username"]');
+                    </script>
+                </text>
+                <text>
+                    <script type="text/javascript">
+                        $('#adminAdd').removeClass("hide");
+                        $('#packUpdate').removeClass("hide");
+                    </script>
+                </text>
+           }
+        </div>
+    </div>
+    <div class="row" style="margin-top:10px">
+        <table id="devlist" class="table table-striped table-hover ">
+
+            <tr>
+                <th>管理员名称</th>
+                <th>管理员编号</th>
+                <th>手机号</th>
+                <th>管理员类型</th>
+                <th>创建日期</th>
+                <th>操作</th>
+            </tr>
+            <tbody id="tbPasswd">
+                @{
+                    if (Model == null)
+                    {
+                        return;
+                    }
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.AdminName</td>
+                            <td>@item.AdminCode</td>
+                            <td>@item.Telephone</td>
+                            <td>普通管理员</td>
+                            <td>@item.CreateDate</td>
+                            <td><a href="javascript:void(0)" onclick="RemoveData('@item.AdminID')">删除</a> <a href="javascript:void(0)" onclick="ResetPwd('@item.AdminID')">密码重置</a></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+

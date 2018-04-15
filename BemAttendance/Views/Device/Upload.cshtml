@@ -1,0 +1,204 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>释码大华考勤管理后台</title>
+    @{
+        if (((bool)ViewData["reloadJS"]) == true)
+        {
+            @Styles.Render("~/Content/css");
+            @Scripts.Render("~/bundles/modernizr");
+            @Scripts.Render("~/bundles/jquery");
+            @Scripts.Render("~/bundles/bootstrap");
+        }
+    }
+    <!--[if it IE 9] -->
+    @*<script src="http://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>*@
+    <!--[end if]-->
+    <script src="~/Scripts/ajaxfileupload.js"></script>
+    <script type="text/javascript">
+        var maxSize = 5 * 1024 * 1024; //5M
+        var errMsg = "上传的附件文件不能超过5M";
+        var tipMsg = "您的浏览器暂不支持计算上传文件的大小，确保上传文件不要超过5M，建议使用IE、FireFox、Chrome浏览器。";
+        var browserCfg = {};
+        var ua = window.navigator.userAgent;
+        if (ua.indexOf("MSIE") >= 1) {
+            browserCfg.ie = true;
+        }
+        else if (ua.indexOf("Firefox") >= 1) {
+            browserCfg.firefox = true;
+        } else if (ua.indexOf("Chrome") >= 1) {
+            browserCfg.chrome = true;
+        }
+        function checkfile() {
+            try {
+                var obj_file = document.getElementById("file");
+                if (obj_file.value == "" || obj_file.value == null || obj_file.value == undefined) {
+                    $('#errorInfo').removeClass('hide');
+                    $('#errorInfo').text("请先选择需要上传的文件");
+                    return;
+                }
+                var filesize = 0;
+                if (browserCfg.firefox || browserCfg.chrome ) {
+                    filesize = obj_file.files[0].size;  //如果用jquery是obj_file[0]
+                }
+                else if (browserCfg.ie) {
+                    var obj_img = document.getElementById('tempimg');
+                    obj_img.dynsrc = obj_file.value;
+                    filesize = obj_img.fileSize;
+                }
+                else {
+                    $('#errorInfo').removeClass('hide');
+                    $('#errorInfo').text(tipMsg);
+                    return;
+                }
+                if (filesize == -1) {
+                    $('#errorInfo').removeClass('hide');
+                    $('#errorInfo').text(tipMsg);
+                    return;
+                }
+                else if (filesize > maxSize) {
+                    $('#errorInfo').removeClass('hide');
+                    $('#errorInfo').text(errMsg);
+                    return;
+                }
+                else {
+                    uploadFile();
+                    return;
+                }
+            }
+            catch (e) {
+            }
+        }     
+    $(document).ready(function(){
+        showDevUploadDialog();
+        });
+        function showDevUploadDialog()
+        {
+            $('#uploadform').modal('show');
+        }
+        function hideDialog()
+        {
+            $('#uploadform').modal('hide');
+        }
+        function closeWebPage() {
+            if (!(window.location.href.indexOf('upload') >= 0 || window.location.href.indexOf('Upload') >= 0))
+            {
+                hideitem();
+            }
+            else {
+
+                if (navigator.userAgent.indexOf("MSIE") > 0) {
+                    if (navigator.userAgent.indexOf("MSIE 6.0") > 0) {
+                        window.opener = null;
+                        window.close();
+                    } else {
+                        window.open('', '_top');
+                        window.top.close();
+                    }
+                }
+                else if (navigator.userAgent.indexOf("Firefox") > 0) {
+                    window.location.href = 'about:blank ';
+                } else {
+                    window.opener = null;
+                    window.open('', '_self', '');
+                    window.close();
+                }
+            }
+        }
+        function  uploadFile()
+        {
+            var val = $('#file').val();
+            if(val==null||val==undefined||val=='')
+            {
+                $('#errorInfo').removeClass('hide');
+                $('#errorInfo').text("请先选择需要上传的文件");
+                return;
+            }
+            else {
+                $('#errorInfo').addClass('hide');
+            }
+            $.ajaxFileUpload
+            (
+                {
+                    url: '/device/upload', //用于文件上传的服务器端请求地址
+                    secureuri: false, //是否需要安全协议，一般设置为false
+                    fileElementId: 'file', //文件上传域的ID
+                    dataType: 'text/html',
+                    async: false,
+                    success: function (data,status)  //服务器成功响应处理函数
+                    {
+                        if (data == "OK") {
+                            window.location.href = "/device";
+                        }
+                        else
+                        {
+                            $('#errorInfo').removeClass('hide');
+                            $('#errorInfo').text(data);
+                        }
+                    },
+                    error: function (data,status,e)//服务器响应失败处理函数
+                    {
+                        $('#errorInfo').removeClass('hide');
+                        $('#errorInfo').text("请求失败");
+                    }
+                }
+            )
+        }
+        function readPath()
+        {
+            var filePath = $('#file').val();
+            $('#devpath').val(filePath);
+        }
+    </script>
+</head>
+<body>
+    <div id="uploadform"class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" aria-hidden="true" type="button" data-dismiss="modal" onclick="closeWebPage()">&times;</button>
+                    <h4 class="modal-title">批量上传</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" onsubmit="return false">
+                        <fieldset>
+                            <div class="form-group">
+                                <div style="margin-bottom:5px;margin-top:5px; padding-left:30px"><label class="control-label text-danger hide" id="errorInfo"></label></div>
+                                <label class="col-lg-2 control-label" for="inputUsrName">文件路径</label>
+                                <div class="col-lg-5" style="padding:0px; display:inline-block;margin:0px">
+                                    <input class="form-control col-md-7" type="text" id="devpath" name="devpath" style="width:100%;margin:0px" /> 
+                                </div>
+                                <div class="col-lg-2 col-lg-pull-1" style="padding:0px 0px 0px 55px">
+                                    <button class="btn btn-default" style="position:absolute ">浏览</button>
+                                    <input class="form-control"  style="position:absolute; top:-5px; width:53px;opacity:0" id="file" name="file" type="file" onchange="readPath()"/>
+                                </div>
+                                </div>
+                            
+                            <div class="well">
+                                <p>批量导入的文件格式支持<strong>CSV</strong>文件</p>
+                                <p>批量导入的文件模板详见<strong><a href="~/Content/设备模板.csv">模板下载</a></strong></p>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-10 col-lg-offset-3">
+                                    <button class="btn btn-primary" style="width:150px"  onclick="checkfile()">上传</button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

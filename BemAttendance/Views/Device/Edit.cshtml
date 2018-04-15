@@ -1,0 +1,80 @@
+﻿@using BEMAttendance.Models
+
+@model BEMAttendance.clientdevice
+    <form class="form-horizontal" method="post" action="/device/edit">
+        <fieldset>
+            <legend>设备操作</legend>
+            @if ((VisitorRole)ViewData["VisitorRole"] == VisitorRole.Admin || (VisitorRole)ViewData["VisitorRole"] == VisitorRole.SubAdmin)
+            {
+                <text>
+                    <script type="text/javascript">
+               $('#loginlink').attr('href', '/loginUI/logout');
+               $('#loginlink').text('注销');
+               $('#loginname').text('@ViewData["username"]');
+                    </script>
+                </text>
+                if ((VisitorRole)ViewData["VisitorRole"] == VisitorRole.Admin)
+                {
+                    <text>
+                        <script type="text/javascript">
+                            $('#adminAdd').removeClass("hide");
+                            $('#packUpdate').removeClass("hide");
+                        </script>
+                    </text>
+                }
+            }
+            else
+            {
+                <script type="text/javascript">
+                  $('#loginlink').attr('href', '/loginUI/logout');
+                  $('#loginlink').text('注销');
+                  $('#loginname').text('@ViewData["username"]');
+                  $('#passwdLink').addClass("hide");
+                    $('#adminAdd').addClass("hide");
+                    $('#packUpdate').addClass("hide");
+                </script>
+            }
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.ValidationMessage("Title", new { @class = "text-danger" })
+                @Html.LabelFor(model => model.DevCode, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-lg-10">
+                    @Html.EditorFor(model => model.DevCode, new { htmlAttributes = new { @class = "form-control",@readonly="true" } })
+                    @Html.ValidationMessageFor(model => model.DevCode, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.DevName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-lg-10">
+                    @Html.EditorFor(model => model.DevName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.DevName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.DevIP, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-lg-10">
+                    @Html.EditorFor(model => model.DevIP, new { htmlAttributes = new { @class = "form-control", @readonly = "true" } })
+                    @Html.ValidationMessageFor(model => model.DevIP, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.DevAddress, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-lg-10">
+                    @Html.EditorFor(model => model.DevAddress, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.DevAddress, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.DevManager, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-lg-10">
+                    @Html.EditorFor(model => model.DevManager, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.DevManager, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-10 col-lg-offset-2">
+                    <button class="btn btn-primary" type="submit">保存</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>

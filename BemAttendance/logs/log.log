@@ -1,0 +1,226 @@
+INFO  2018-02-02 00:48:00,319[1]   129ms logInfo                Application_Start  - 网站启动:2018-02-02 00:48:00
+ERROR 2018-02-02 00:48:31,949[5] 31760ms logInfo                Index              - 系统登录失败
+System.Data.Entity.Core.EntityException: 基础提供程序在 Open 上失败。 ---> MySql.Data.MySqlClient.MySqlException: Authentication to host 'localhost' for user 'root' using method 'mysql_native_password' failed with message: Access denied for user 'root'@'localhost' (using password: YES) ---> MySql.Data.MySqlClient.MySqlException: Access denied for user 'root'@'localhost' (using password: YES)
+   在 MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   在 MySql.Data.MySqlClient.Authentication.MySqlAuthenticationPlugin.ReadPacket()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 MySql.Data.MySqlClient.Authentication.MySqlAuthenticationPlugin.AuthenticationFailed(Exception ex)
+   在 MySql.Data.MySqlClient.Authentication.MySqlAuthenticationPlugin.ReadPacket()
+   在 MySql.Data.MySqlClient.Authentication.MySqlAuthenticationPlugin.Authenticate(Boolean reset)
+   在 MySql.Data.MySqlClient.NativeDriver.Open()
+   在 MySql.Data.MySqlClient.Driver.Open()
+   在 MySql.Data.MySqlClient.Driver.Create(MySqlConnectionStringBuilder settings)
+   在 MySql.Data.MySqlClient.MySqlPool.CreateNewPooledConnection()
+   在 MySql.Data.MySqlClient.MySqlPool.GetPooledConnection()
+   在 MySql.Data.MySqlClient.MySqlPool.TryToGetDriver()
+   在 MySql.Data.MySqlClient.MySqlPool.GetConnection()
+   在 MySql.Data.MySqlClient.MySqlConnection.Open()
+   在 System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext](TTarget target, Action`2 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.Open(DbConnection connection, DbInterceptionContext interceptionContext)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.Core.Objects.ObjectContext.EnsureConnection(Boolean shouldMonitorTransactions)
+   在 System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)
+   在 System.Data.Entity.Core.Objects.ObjectQuery`1.<>c__DisplayClass7.<GetResults>b__5()
+   在 System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   在 System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__0()
+   在 System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   在 System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   在 BEMAttendance.Controllers.LoginUIController.Index(sysadmin user) 位置 D:\mywork\outdoor\明莱太阳能\code\MLTyn\MLTyn\BemAttendance\Controllers\LoginUIController.cs:行号 64
+ERROR 2018-02-02 00:49:46,531[5] 106342ms logInfo                Index              - 系统登录失败
+System.Data.Entity.Core.EntityException: 基础提供程序在 Open 上失败。 ---> MySql.Data.MySqlClient.MySqlException: Authentication to host 'localhost' for user 'root' using method 'mysql_native_password' failed with message: Access denied for user 'root'@'localhost' (using password: YES) ---> MySql.Data.MySqlClient.MySqlException: Access denied for user 'root'@'localhost' (using password: YES)
+   在 MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   在 MySql.Data.MySqlClient.Authentication.MySqlAuthenticationPlugin.ReadPacket()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 MySql.Data.MySqlClient.Authentication.MySqlAuthenticationPlugin.AuthenticationFailed(Exception ex)
+   在 MySql.Data.MySqlClient.Authentication.MySqlAuthenticationPlugin.ReadPacket()
+   在 MySql.Data.MySqlClient.Authentication.MySqlAuthenticationPlugin.Authenticate(Boolean reset)
+   在 MySql.Data.MySqlClient.NativeDriver.Open()
+   在 MySql.Data.MySqlClient.Driver.Open()
+   在 MySql.Data.MySqlClient.Driver.Create(MySqlConnectionStringBuilder settings)
+   在 MySql.Data.MySqlClient.MySqlPool.CreateNewPooledConnection()
+   在 MySql.Data.MySqlClient.MySqlPool.GetPooledConnection()
+   在 MySql.Data.MySqlClient.MySqlPool.TryToGetDriver()
+   在 MySql.Data.MySqlClient.MySqlPool.GetConnection()
+   在 MySql.Data.MySqlClient.MySqlConnection.Open()
+   在 System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext](TTarget target, Action`2 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.Open(DbConnection connection, DbInterceptionContext interceptionContext)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.Core.Objects.ObjectContext.EnsureConnection(Boolean shouldMonitorTransactions)
+   在 System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)
+   在 System.Data.Entity.Core.Objects.ObjectQuery`1.<>c__DisplayClass7.<GetResults>b__5()
+   在 System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   在 System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__0()
+   在 System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   在 System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   在 BEMAttendance.Controllers.LoginUIController.Index(sysadmin user) 位置 D:\mywork\outdoor\明莱太阳能\code\MLTyn\MLTyn\BemAttendance\Controllers\LoginUIController.cs:行号 64
+ERROR 2018-02-02 00:49:52,381[5] 112192ms logInfo                Index              - 系统登录失败
+System.Data.Entity.Core.EntityException: 基础提供程序在 Open 上失败。 ---> MySql.Data.MySqlClient.MySqlException: Authentication to host 'localhost' for user 'root' using method 'mysql_native_password' failed with message: Access denied for user 'root'@'localhost' (using password: YES) ---> MySql.Data.MySqlClient.MySqlException: Access denied for user 'root'@'localhost' (using password: YES)
+   在 MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   在 MySql.Data.MySqlClient.Authentication.MySqlAuthenticationPlugin.ReadPacket()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 MySql.Data.MySqlClient.Authentication.MySqlAuthenticationPlugin.AuthenticationFailed(Exception ex)
+   在 MySql.Data.MySqlClient.Authentication.MySqlAuthenticationPlugin.ReadPacket()
+   在 MySql.Data.MySqlClient.Authentication.MySqlAuthenticationPlugin.Authenticate(Boolean reset)
+   在 MySql.Data.MySqlClient.NativeDriver.Open()
+   在 MySql.Data.MySqlClient.Driver.Open()
+   在 MySql.Data.MySqlClient.Driver.Create(MySqlConnectionStringBuilder settings)
+   在 MySql.Data.MySqlClient.MySqlPool.CreateNewPooledConnection()
+   在 MySql.Data.MySqlClient.MySqlPool.GetPooledConnection()
+   在 MySql.Data.MySqlClient.MySqlPool.TryToGetDriver()
+   在 MySql.Data.MySqlClient.MySqlPool.GetConnection()
+   在 MySql.Data.MySqlClient.MySqlConnection.Open()
+   在 System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext](TTarget target, Action`2 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.Open(DbConnection connection, DbInterceptionContext interceptionContext)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.Core.Objects.ObjectContext.EnsureConnection(Boolean shouldMonitorTransactions)
+   在 System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)
+   在 System.Data.Entity.Core.Objects.ObjectQuery`1.<>c__DisplayClass7.<GetResults>b__5()
+   在 System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   在 System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__0()
+   在 System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   在 System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   在 BEMAttendance.Controllers.LoginUIController.Index(sysadmin user) 位置 D:\mywork\outdoor\明莱太阳能\code\MLTyn\MLTyn\BemAttendance\Controllers\LoginUIController.cs:行号 64
+ERROR 2018-02-02 00:50:17,552[14] 137363ms logInfo                Index              - 系统登录失败
+System.Data.Entity.Core.EntityException: 基础提供程序在 Open 上失败。 ---> MySql.Data.MySqlClient.MySqlException: Authentication to host 'localhost' for user 'root' using method 'mysql_native_password' failed with message: Access denied for user 'root'@'localhost' (using password: YES) ---> MySql.Data.MySqlClient.MySqlException: Access denied for user 'root'@'localhost' (using password: YES)
+   在 MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   在 MySql.Data.MySqlClient.Authentication.MySqlAuthenticationPlugin.ReadPacket()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 MySql.Data.MySqlClient.Authentication.MySqlAuthenticationPlugin.AuthenticationFailed(Exception ex)
+   在 MySql.Data.MySqlClient.Authentication.MySqlAuthenticationPlugin.ReadPacket()
+   在 MySql.Data.MySqlClient.Authentication.MySqlAuthenticationPlugin.Authenticate(Boolean reset)
+   在 MySql.Data.MySqlClient.NativeDriver.Open()
+   在 MySql.Data.MySqlClient.Driver.Open()
+   在 MySql.Data.MySqlClient.Driver.Create(MySqlConnectionStringBuilder settings)
+   在 MySql.Data.MySqlClient.MySqlPool.CreateNewPooledConnection()
+   在 MySql.Data.MySqlClient.MySqlPool.GetPooledConnection()
+   在 MySql.Data.MySqlClient.MySqlPool.TryToGetDriver()
+   在 MySql.Data.MySqlClient.MySqlPool.GetConnection()
+   在 MySql.Data.MySqlClient.MySqlConnection.Open()
+   在 System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext](TTarget target, Action`2 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.Open(DbConnection connection, DbInterceptionContext interceptionContext)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.Core.Objects.ObjectContext.EnsureConnection(Boolean shouldMonitorTransactions)
+   在 System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)
+   在 System.Data.Entity.Core.Objects.ObjectQuery`1.<>c__DisplayClass7.<GetResults>b__5()
+   在 System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   在 System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__0()
+   在 System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   在 System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   在 BEMAttendance.Controllers.LoginUIController.Index(sysadmin user) 位置 D:\mywork\outdoor\明莱太阳能\code\MLTyn\MLTyn\BemAttendance\Controllers\LoginUIController.cs:行号 64
+INFO  2018-02-02 00:51:16,219[1]   189ms logInfo                Info               - 网站启动:2018-02-02 00:51:16
+ERROR 2018-02-02 00:53:03,373[8] 107343ms logInfo                Error              - 系统登录失败
+System.Data.Entity.Core.EntityException: 基础提供程序在 Open 上失败。 ---> MySql.Data.MySqlClient.MySqlException: Authentication to host 'localhost' for user 'root' using method 'mysql_native_password' failed with message: Access denied for user 'root'@'localhost' (using password: YES) ---> MySql.Data.MySqlClient.MySqlException: Access denied for user 'root'@'localhost' (using password: YES)
+   在 MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   在 MySql.Data.MySqlClient.Authentication.MySqlAuthenticationPlugin.ReadPacket()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 MySql.Data.MySqlClient.Authentication.MySqlAuthenticationPlugin.AuthenticationFailed(Exception ex)
+   在 MySql.Data.MySqlClient.Authentication.MySqlAuthenticationPlugin.ReadPacket()
+   在 MySql.Data.MySqlClient.Authentication.MySqlAuthenticationPlugin.Authenticate(Boolean reset)
+   在 MySql.Data.MySqlClient.NativeDriver.Open()
+   在 MySql.Data.MySqlClient.Driver.Open()
+   在 MySql.Data.MySqlClient.Driver.Create(MySqlConnectionStringBuilder settings)
+   在 MySql.Data.MySqlClient.MySqlPool.CreateNewPooledConnection()
+   在 MySql.Data.MySqlClient.MySqlPool.GetPooledConnection()
+   在 MySql.Data.MySqlClient.MySqlPool.TryToGetDriver()
+   在 MySql.Data.MySqlClient.MySqlPool.GetConnection()
+   在 MySql.Data.MySqlClient.MySqlConnection.Open()
+   在 System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext](TTarget target, Action`2 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.Open(DbConnection connection, DbInterceptionContext interceptionContext)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.Core.Objects.ObjectContext.EnsureConnection(Boolean shouldMonitorTransactions)
+   在 System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)
+   在 System.Data.Entity.Core.Objects.ObjectQuery`1.<>c__DisplayClass7.<GetResults>b__5()
+   在 System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   在 System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__0()
+   在 System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   在 System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   在 BEMAttendance.Controllers.LoginUIController.Index(sysadmin user) 位置 D:\mywork\outdoor\明莱太阳能\code\MLTyn\MLTyn\BemAttendance\Controllers\LoginUIController.cs:行号 66
+INFO  2018-02-02 00:55:18,997[1]   172ms logInfo                Info               - 网站启动:2018-02-02 00:55:18
+INFO  2018-02-02 01:04:23,345[1]   177ms logInfo                Info               - 网站启动:2018-02-02 01:04:23
+INFO  2018-02-02 12:39:19,058[1]   140ms logInfo                Info               - 网站启动:2018-02-02 12:39:18
+INFO  2018-02-02 12:50:58,750[1]   139ms logInfo                Info               - 网站启动:2018-02-02 12:50:58
+INFO  2018-02-02 12:53:00,876[1]   132ms logInfo                Info               - 网站启动:2018-02-02 12:53:00
+INFO  2018-02-02 13:12:02,851[1]   148ms logInfo                Info               - 网站启动:2018-02-02 13:12:02
+INFO  2018-02-02 13:45:48,468[1]   147ms logInfo                Info               - 网站启动:2018-02-02 13:45:48
+INFO  2018-02-02 14:01:06,024[1]   199ms logInfo                Info               - 网站启动:2018-02-02 14:01:05
+INFO  2018-02-02 14:39:14,974[1]   186ms logInfo                Info               - 网站启动:2018-02-02 14:39:14
+ERROR 2018-02-02 14:44:52,559[5] 337771ms logInfo                Error              - 刷新设备列表失败
+System.Net.Sockets.SocketException (0x80004005): 由于目标计算机积极拒绝，无法连接。 127.0.0.1:7911
+   在 System.Net.Sockets.TcpClient.Connect(String hostname, Int32 port)
+   在 Thrift.Transport.TSocket.Open() 位置 d:\thrift-nuget\lib\csharp\src\Transport\TSocket.cs:行号 136
+   在 BEMAttendance.Models.Thrift.ThriftClient.Refresh(Int32 slaveid, Boolean operate) 位置 D:\mywork\outdoor\明莱太阳能\code\MLTyn\MLTyn\BemAttendance\Models\Thrift\ThriftClient.cs:行号 80
+ERROR 2018-02-02 14:45:02,919[5] 348131ms logInfo                Error              - 刷新设备列表失败
+System.Net.Sockets.SocketException (0x80004005): 由于目标计算机积极拒绝，无法连接。 127.0.0.1:7911
+   在 System.Net.Sockets.TcpClient.Connect(String hostname, Int32 port)
+   在 Thrift.Transport.TSocket.Open() 位置 d:\thrift-nuget\lib\csharp\src\Transport\TSocket.cs:行号 136
+   在 BEMAttendance.Models.Thrift.ThriftClient.Refresh(Int32 slaveid, Boolean operate) 位置 D:\mywork\outdoor\明莱太阳能\code\MLTyn\MLTyn\BemAttendance\Models\Thrift\ThriftClient.cs:行号 80
+INFO  2018-02-02 16:41:10,221[1]   245ms logInfo                Info               - 网站启动:2018-02-02 16:41:09
+INFO  2018-02-02 17:03:53,669[1]   501ms logInfo                Info               - 网站启动:2018-02-02 17:03:53
+INFO  2018-02-02 17:13:27,881[1]   506ms logInfo                Info               - 网站启动:2018-02-02 17:13:27
+INFO  2018-02-02 17:17:40,797[1]   523ms logInfo                Info               - 网站启动:2018-02-02 17:17:40
+INFO  2018-02-02 17:22:14,950[1]   434ms logInfo                Info               - 网站启动:2018-02-02 17:22:13
+INFO  2018-02-03 17:21:37,859[1]   360ms logInfo                Info               - 网站启动:2018-02-03 17:21:37
+INFO  2018-02-04 10:58:48,266[1]   790ms logInfo                Info               - 网站启动:2018-02-04 10:58:47
+INFO  2018-02-04 12:08:53,263[1]   339ms logInfo                Info               - 网站启动:2018-02-04 12:08:52
+INFO  2018-02-04 12:30:38,318[1]   549ms logInfo                Info               - 网站启动:2018-02-04 12:30:37
+INFO  2018-02-04 13:12:04,136[1]   218ms logInfo                Info               - 网站启动:2018-02-04 13:12:03
+INFO  2018-02-04 13:13:15,884[1]   378ms logInfo                Info               - 网站启动:2018-02-04 13:13:15
+INFO  2018-02-04 13:18:15,144[1]   427ms logInfo                Info               - 网站启动:2018-02-04 13:18:14
+INFO  2018-02-04 13:30:49,320[1]   238ms logInfo                Info               - 网站启动:2018-02-04 13:30:49
+INFO  2018-02-04 16:31:44,783[1]   386ms logInfo                Info               - 网站启动:2018-02-04 16:31:44
+INFO  2018-02-04 16:41:14,866[1]   133ms logInfo                Info               - 网站启动:2018-02-04 16:41:14
+INFO  2018-02-04 16:45:14,465[1]   533ms logInfo                Info               - 网站启动:2018-02-04 16:45:13
+INFO  2018-02-04 16:55:31,629[1]   163ms logInfo                Info               - 网站启动:2018-02-04 16:55:31
+INFO  2018-02-04 17:04:58,231[1]   176ms logInfo                Info               - 网站启动:2018-02-04 17:04:58
+INFO  2018-02-04 17:09:00,311[1]   347ms logInfo                Info               - 网站启动:2018-02-04 17:08:59
+INFO  2018-02-04 17:10:59,197[1]   540ms logInfo                Info               - 网站启动:2018-02-04 17:10:58
+INFO  2018-02-04 17:13:35,258[1]   203ms logInfo                Info               - 网站启动:2018-02-04 17:13:35
+INFO  2018-03-17 15:59:39,514[1]   181ms logInfo                Info               - 网站启动:2018-03-17 15:59:39
+INFO  2018-03-17 18:34:35,784[1]   177ms logInfo                Info               - 网站启动:2018-03-17 18:34:35
+INFO  2018-03-17 18:40:02,644[1]   194ms logInfo                Info               - 网站启动:2018-03-17 18:40:02
+INFO  2018-03-17 18:46:19,287[1]   203ms logInfo                Info               - 网站启动:2018-03-17 18:46:19
+INFO  2018-03-18 11:03:08,422[1]   227ms logInfo                Info               - 网站启动:2018-03-18 11:03:08
+INFO  2018-03-18 11:05:28,089[1]   156ms logInfo                Info               - 网站启动:2018-03-18 11:05:27
+INFO  2018-03-18 11:08:28,249[1]   220ms logInfo                Info               - 网站启动:2018-03-18 11:08:27
+INFO  2018-03-18 11:57:28,558[1]   151ms logInfo                Info               - 网站启动:2018-03-18 11:57:28
+INFO  2018-03-18 12:04:33,675[1]   128ms logInfo                Info               - 网站启动:2018-03-18 12:04:33
+INFO  2018-03-18 12:07:12,045[1]   120ms logInfo                Info               - 网站启动:2018-03-18 12:07:11
+ERROR 2018-03-18 12:10:26,043[15] 194118ms logInfo                Error              - 刷新设备列表失败
+System.Net.Sockets.SocketException (0x80004005): 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。 192.168.9.203:7911
+   在 System.Net.Sockets.TcpClient.Connect(String hostname, Int32 port)
+   在 Thrift.Transport.TSocket.Open() 位置 d:\thrift-nuget\lib\csharp\src\Transport\TSocket.cs:行号 136
+   在 BEMAttendance.Models.Thrift.ThriftClient.Refresh(Int32 slaveid, Boolean operate) 位置 D:\mywork\outdoor\明莱太阳能\code\MLTyn\MLTyn\BemAttendance\Models\Thrift\ThriftClient.cs:行号 80
+ERROR 2018-03-18 12:10:40,275[11] 208350ms logInfo                Error              - 打开配置页面失败
+System.ArgumentNullException: 值不能为 null。
+参数名: String
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 BEMAttendance.Controllers.DeviceController.Operate(String id, String serialCode, String port) 位置 D:\mywork\outdoor\明莱太阳能\code\MLTyn\MLTyn\BemAttendance\Controllers\DeviceController.cs:行号 287
+INFO  2018-03-18 12:14:59,406[1]   138ms logInfo                Info               - 网站启动:2018-03-18 12:14:59
+ERROR 2018-03-18 12:15:47,515[17] 48246ms logInfo                Error              - 打开配置页面失败
+System.ArgumentNullException: 值不能为 null。
+参数名: String
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 BEMAttendance.Controllers.DeviceController.Operate(String id, String serialCode, String port) 位置 D:\mywork\outdoor\明莱太阳能\code\MLTyn\MLTyn\BemAttendance\Controllers\DeviceController.cs:行号 287
+INFO  2018-03-18 12:18:57,809[1]   229ms logInfo                Info               - 网站启动:2018-03-18 12:18:57
+INFO  2018-03-18 12:26:32,173[1]   220ms logInfo                Info               - 网站启动:2018-03-18 12:26:31
+ERROR 2018-03-18 12:27:40,581[9] 68627ms logInfo                Error              - 打开配置页面失败
+System.InvalidOperationException: 序列不包含任何元素
+   在 System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   在 BEMAttendance.Controllers.DeviceController.Operate(String id) 位置 D:\mywork\outdoor\明莱太阳能\code\MLTyn\MLTyn\BemAttendance\Controllers\DeviceController.cs:行号 293
+INFO  2018-03-18 12:30:01,222[1]   175ms logInfo                Info               - 网站启动:2018-03-18 12:30:01
+INFO  2018-03-18 20:43:03,098[1]   184ms logInfo                Info               - 网站启动:2018-03-18 20:43:02
+INFO  2018-03-18 20:46:12,923[1]   181ms logInfo                Info               - 网站启动:2018-03-18 20:46:12
+INFO  2018-03-18 20:51:31,628[1]   141ms logInfo                Info               - 网站启动:2018-03-18 20:51:31
+INFO  2018-03-18 20:56:53,161[1]   183ms logInfo                Info               - 网站启动:2018-03-18 20:56:52

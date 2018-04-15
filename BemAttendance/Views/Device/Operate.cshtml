@@ -1,0 +1,308 @@
+﻿@model  DeviceInfo
+@using BEMAttendance.Models.Params
+@using BEMAttendance.Models
+
+<script>
+    function openDevice()
+    {
+        var devid = $('#slaveID').val();
+        $.ajax(
+            {
+                url: "/Device/SetRunStatus",
+                type: "Get",
+                async: true,
+                data: { mode: "1", slaveid: devid },
+                success: function (strvalue) {
+                    if (strvalue == "OK") {
+                        $("#errorInfo").text("开启设备成功");
+                        $("#alertDiv").removeClass("hide");
+                        $("#alertDiv").addClass("alert-success");
+                    }
+                    else {
+                        $("#errorInfo").text(strvalue);
+                        $("#alertDiv").removeClass("hide");
+                        $("#alertDiv").addClass("alert-danger");
+                    }
+
+                }
+            });
+    }
+    function closeDevice()
+    {
+        var devid = $('#slaveID').val();
+        $.ajax(
+            {
+                url: "/Device/SetRunStatus",
+                type: "Get",
+                async: true,
+                data: { mode: "0", slaveid: devid },
+                success: function (strvalue) {
+                    if (strvalue == "OK") {
+                        $("#errorInfo").text("停止设备成功");
+                        $("#alertDiv").removeClass("hide");
+                        $("#alertDiv").addClass("alert-success");
+                    }
+                    else {
+                        $("#errorInfo").text(strvalue);
+                        $("#alertDiv").removeClass("hide");
+                        $("#alertDiv").addClass("alert-danger");
+                    }
+
+                }
+            });
+    }
+    function setMode()
+    {
+        var rdo= $("input[type='radio']:checked").val();
+        var devid = $('#slaveID').val();
+        $.ajax(
+            {
+                url: "/Device/SetMode",
+                type: "Get",
+                async: true,
+                data: { mode: rdo, slaveid: devid },
+                success: function (strvalue) {
+                    if (strvalue == "OK") {
+                        $("#errorInfo").text("设置模式成功");
+                        $("#alertDiv").removeClass("hide");
+                        $("#alertDiv").addClass("alert-success");
+                    }
+                    else {
+                        $("#errorInfo").text(strvalue);
+                        $("#alertDiv").removeClass("hide");
+                        $("#alertDiv").addClass("alert-danger");
+                    }
+
+                }
+            });
+    }
+    function setTemp()
+    {
+        var temp = $('#SetTemp').val();
+        var devid = $('#slaveID').val();
+        $.ajax(
+            {
+                url: "/Device/SetTemp",
+                type: "Get",
+                async: true,
+                data: { temp: temp, slaveid: devid },
+                success: function (strvalue) {
+                    if (strvalue == "OK") {
+                        $("#errorInfo").text("设置温度成功");
+                        $("#alertDiv").removeClass("hide");
+                        $("#alertDiv").addClass("alert-success");
+                    }
+                    else {
+                        $("#errorInfo").text(strvalue);
+                        $("#alertDiv").removeClass("hide");
+                        $("#alertDiv").addClass("alert-danger");
+                    }
+
+                    }
+                });
+    }
+    $(document).ready(function () {
+
+        setInterval("RefreshStatus()", 5000);
+    });
+    function RefreshStatus() {
+        var devid = $('#slaveID').val();
+            $.ajax(
+                {
+                    url: "/Device/GetDeviceStatus",
+                    type: "Get",
+                    async: true,
+                    data: { slaveid: devid },
+                    success: function (strvalue) {
+                        if (strvalue != "null") {
+                            var strs = new Array();
+                            strs = strvalue.split(':');
+                            if (strs.length > 0) {
+                                if (strs[0] != "OK")
+                                {
+                                    return;
+                                }
+                                var status = strs[1];
+                                if (status == "0")  //停止
+                                {
+                                    $("#runStatus").html(" <span class='label label-danger'>&nbsp;&nbsp;停止 &nbsp;&nbsp; </span>");
+                                }
+                                else if (status == "1") //在线
+                                {
+                                    $("#runStatus").html(" <span class='label label-success'>&nbsp;&nbsp;运行中 &nbsp;&nbsp; </span>");
+                                }
+                                else if (status == "2")
+                                {
+                                    $("#runStatus").html("<span class='label label-warning'>&nbsp;&nbsp;通讯异常 &nbsp;&nbsp; </span>");
+                                }
+
+                            }
+
+                        }
+                    }
+                });
+
+        }
+
+    }
+</script>
+    <legend>设备操作</legend>
+    @if ((VisitorRole)ViewData["VisitorRole"] == VisitorRole.Admin || (VisitorRole)ViewData["VisitorRole"] == VisitorRole.SubAdmin)
+    {
+        <text>
+            <script type="text/javascript">
+            $('#loginlink').attr('href', '/loginUI/logout');
+            $('#loginlink').text('注销');
+            $('#loginname').text('@ViewData["username"]');
+            </script>
+        </text>
+        if ((VisitorRole)ViewData["VisitorRole"] == VisitorRole.Admin)
+        {
+            <text>
+                <script type="text/javascript">
+                    $('#adminAdd').removeClass("hide");
+                    $('#packUpdate').removeClass("hide");
+                </script>
+            </text>
+        }
+    }
+    else
+    {
+        <script type="text/javascript">
+                $('#loginlink').attr('href', '/loginUI/logout');
+                $('#loginlink').text('注销');
+                $('#loginname').text('@ViewData["username"]');
+                $('#passwdLink').addClass("hide");
+                $('#adminAdd').addClass("hide");
+                $('#packUpdate').addClass("hide");
+        </script>
+    }
+<div class="row" style="margin-left:5px">
+    <div id="alertDiv" class="alert alert-dismissible hide">
+        <label class="control-label" id="errorInfo"></label>
+    </div>
+</div>
+<form class="form-horizontal">
+    <fieldset>
+        <div class="row">
+            <div class="col-lg-5 col-md-5">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.slaveID, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-lg-10">
+                        @Html.EditorFor(model => model.slaveID, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.devName, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-lg-10">
+                        @Html.EditorFor(model => model.devName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-lg-2">设备子类型</label>
+                    <div class="col-lg-10">
+                        @Html.EditorFor(model => model.subTypeName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-lg-2">备注</label>
+                    <div class="col-lg-10">
+                        @Html.TextAreaFor(model => model.note, htmlAttributes: new { @class = "form-control", @row = "3", @readOnly = "readonly" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7 col-md-7">
+                <div class="form-group">
+                    <label class="control-label col-lg-2">运行状态</label>
+                    <div class="col-lg-10" id="runStatus">
+                        @if (Model.runStatus == 0)
+                        {
+                            <span class="label label-danger control-label">&nbsp;&nbsp;停止 &nbsp;&nbsp; </span>
+
+                        }
+                        else if (Model.runStatus == 1)
+                        {
+                            <span class="label label-success control-label">&nbsp;&nbsp;运行中 &nbsp;&nbsp; </span>
+                        }
+                        else
+                        {
+                            <span class="label label-warning control-label">&nbsp;&nbsp;通讯异常 &nbsp;&nbsp; </span>
+                        }
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-lg-2">启停设备</label>
+                    <div class="col-lg-10">
+                        <div class="col-lg-2">
+                            <a class="btn btn-success"  onclick="openDevice()">启动</a>
+                        </div>
+                        <div class="col-lg-2">
+                            <a class="btn btn-danger"  onclick="closeDevice()">停止</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-lg-2">模式设置</label>
+                    <div class="col-lg-10">
+                        <fieldset class="form-group">
+                            <div class="form-check" style="display:inline-block;margin-right:10px">
+                                <label class="form-check-label">
+                                    @if (Model.SetMode == "0")
+                                    {
+                                        <text>
+                                            <input name="optionsRadios" class="form-check-input" id="optionsRadios1" type="radio" checked="checked" value="0">
+                                            制冷
+                                        </text>
+                                    }
+                                    else
+                                    {
+                                        <text>
+                                            <input name="optionsRadios" class="form-check-input" id="optionsRadios1" type="radio" value="0">
+                                            制冷
+                                        </text>
+                                    }
+                                </label>
+                            </div>
+                            <div class="form-check" style="display:inline-block;margin-right:10px">
+                                <label class="form-check-label">
+                                    @if (Model.SetMode == "1")
+                                    {
+                                        <text>
+                                            <input name="optionsRadios" class="form-check-input" id="optionsRadios2" type="radio" checked="checked" value="1">
+                                            制热
+                                        </text>
+                                
+                                    }
+                                    else
+                                    {
+                                        <text>
+                                            <input name="optionsRadios" class="form-check-input" id="optionsRadios2" type="radio" value="1">
+                                            制热
+                                        </text>
+                                    }
+
+                                </label>
+                                <a class="btn btn-default" style="display:inline-block" onclick="setMode()">保存</a>
+                            </div>
+                        </fieldset>
+               
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-lg-2">温度设置</label>
+                    <div class="col-lg-10">
+                        <div style="display:inline-block">
+                        @Html.EditorFor(model => model.SetTemp, new { htmlAttributes = new { @class = "form-control",@style="width:100px" } })
+                            </div>
+                        <div style="display:inline-block">
+                            <a class="btn btn-default" style="vertical-align:middle; display:inline-block" onclick="setTemp()">保存</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+

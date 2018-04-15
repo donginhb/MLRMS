@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>明莱太阳能远程监控系统</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <!--[if it IE 9] -->
+    @*<script src="http://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>*@
+    <!--[end if]-->
+
+    <script type="text/javascript">
+    function loginshow()
+    {
+        $('#loginform').modal('show');
+    }
+    function hideitem()
+    {
+        $('#loginform').modal('hide');
+    }
+    function loginOperate()
+    {
+        $('#loginDialog').load("/LoginUI");
+    }
+    $(document).ready(function(){
+        var url = window.location.href;
+        $('.list-group-item').each(function () {
+            if (containUrl(url, (returnUrl($(this).attr('href')))) >= 0 || ((returnUrl(url) == "")&&(returnUrl($(this).attr('href'))=="home"))) {
+            $(this).addClass('active');
+            }
+    });
+
+    });
+    function returnUrl(href) {
+        var num = href.lastIndexOf('/');
+        return href.substring(num + 1);
+    }
+    function containUrl(url,href)
+    {
+        var num = url.indexOf('/');
+        var substr = url.substring(num + 2);
+        var num2 = substr.indexOf('/');
+        var controller = substr.substring(num2 + 1);
+        return controller.toLowerCase().indexOf(href.toLowerCase());
+    }
+    </script>
+</head>
+<body>
+
+    <div id="loginDialog"></div>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand">明莱太阳能远程监控系统</a>
+            </div>
+            <div class="navbar-collapse collapse" id="navbar-main">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a id="loginlink" href="javascript:loginOperate()">登录</a>
+                    </li>
+                    <li>
+                        <a id="loginname"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 col-xs-4" style="padding-top:10px">
+                <div class="list-group table-of-contents" >
+                    <a class="list-group-item" href="/serialport"><span class="glyphicon glyphicon-hdd"></span> 串口服务器管理</a>
+                    <a class="list-group-item" href="/device"><span class="glyphicon glyphicon-list"></span> 设备管理</a>
+                    <a class="list-group-item" href="/heatPump"><span class="glyphicon glyphicon-globe"></span> 能耗</a>
+                    <a class="list-group-item" href="/waterSupply" id="waterSupply"><span class="glyphicon glyphicon-tint"></span> 用水量</a>
+                    <a class="list-group-item" href="/electric"><span class="glyphicon glyphicon-fire"></span> 用电量</a>
+                    <a class="list-group-item" href="/password" id="passwdLink"><span class="glyphicon glyphicon-lock"></span> 密码修改</a>
+                </div>
+            </div>
+            <div class="col-md-10 col-xs-8">
+                <div class="container-fluid" style="padding:10px 0px 0px 0px">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </div>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

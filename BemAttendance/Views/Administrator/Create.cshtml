@@ -1,0 +1,137 @@
+﻿@model BEMAttendance.Models.NewAdmin
+@using BEMAttendance.Models
+<form class="form-horizontal" method="post" action="/Administrator/create" onkeydown="if(event.keyCode==13){return false;}">
+    <fieldset>
+        <legend>管理员新增</legend>
+        @if ((VisitorRole)ViewData["VisitorRole"] == VisitorRole.Admin|| (VisitorRole)ViewData["VisitorRole"] == VisitorRole.SubAdmin)
+        {
+            <text>
+                <script type="text/javascript">
+               $('#loginlink').attr('href', '/loginUI/logout');
+               $('#loginlink').text('注销');
+               $('#loginname').text('@ViewData["username"]');
+                    </script>
+                </text>
+            if ((VisitorRole)ViewData["VisitorRole"] == VisitorRole.Admin)
+            {
+                <text>
+                    <script type="text/javascript">
+                        $('#adminAdd').removeClass("hide");
+                        $('#packUpdate').removeClass("hide");
+                    </script>
+                </text>
+            }
+        }
+        else
+        {
+            <script type="text/javascript">
+                  $('#loginlink').attr('href', '/loginUI/logout');
+                  $('#loginlink').text('注销');
+                  $('#loginname').text('@ViewData["username"]');
+                  $('#passwdLink').addClass("hide");
+                  $('#adminAdd').addClass("hide");
+                  $('#packUpdate').addClass("hide");
+            </script>
+        }
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @if ((string)ViewData["status"] == "false")
+            {
+            <div class="alert alert-dismissible alert-danger" id="failDiv">
+                <button class="close" type="button" data-dismiss="alert">&times;</button>
+                <strong>添加失败</strong>
+            </div>
+        }
+        <div class="form-group">
+            @Html.LabelFor(model => model.UserCode, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-lg-10">
+                @Html.EditorFor(model => model.UserCode, new { htmlAttributes = new { @class = "form-control",@maxlength = 18 } })
+                @Html.ValidationMessageFor(model => model.UserCode, "", new { @class = "text-danger", @id = "vldCode" })
+                <span class="text-center hide  text-danger" id="errorInfo"></span>
+            </div>
+        </div>
+        <div class="form-group">
+          
+            @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-lg-10">
+                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control", @readonly = "true", @maxlength = 30 } })
+                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+
+            @Html.LabelFor(model => model.Deparment, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-lg-10">
+                @Html.EditorFor(model => model.Deparment, new { htmlAttributes = new { @class = "form-control", @readonly = "true", @maxlength = 30 } })
+                @Html.ValidationMessageFor(model => model.Deparment, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*<div class="form-group">
+            @Html.LabelFor(model => model.Passwd, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-lg-10">
+                @Html.EditorFor(model => model.Passwd, new { htmlAttributes = new { @class = "form-control", @type = "password", @maxlength = 32 } })
+                @Html.ValidationMessageFor(model => model.Passwd, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.NewPwdConfirm, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-lg-10">
+                @Html.EditorFor(model => model.NewPwdConfirm, new { htmlAttributes = new { @class = "form-control", @type = "password", @maxlength = 32 } })
+                @Html.ValidationMessageFor(model => model.NewPwdConfirm, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
+        <div class="form-group">
+            <div class="col-lg-10 col-lg-offset-2">
+                <button class="btn btn-primary" type="submit">保存</button>
+            </div>
+        </div>
+    </fieldset>
+</form>
+<script>
+                    $(function () {
+                        $('#UserCode').blur(function () {
+                            var user = $("#UserCode").val();
+                            if (user == "") {
+                                $('#vldCode').text("");
+                                $('#errorInfo').text("不能为空");
+                                $('#errorInfo').removeClass('hide');
+                                return;
+                            }
+                            if (user.replace(/[ ]/g, "").length == 0) {
+                                $('#vldCode').text("");
+                                $('#errorInfo').text("不能为空");
+                                $('#errorInfo').removeClass('hide');
+                                return;
+                            }
+                            $.ajax({
+                                url: "/Administrator/GetUsrInfo",
+                                type: "post",
+                                data: { userCode: user },
+                                success: function (strValue) {
+                                    var strs = new Array();
+                                    strs = strValue.split(':');
+
+                                    if (strs[0] != "False") {
+
+                                        var strs2 = new Array();
+                                        strs2 = strs[1].split('=');
+                                        $('#vldCode').text("");
+                                        $('#errorInfo').text("");
+                                        $('#UserName').val(strs2[0]);
+                                        $('#Deparment').val(strs2[1]);
+                                    }
+                                    else {
+                                        $('#vldCode').text("");
+                                        $('#errorInfo').text(strs[1]);
+                                        $('#errorInfo').removeClass('hide');
+
+                                    }
+                                },
+                                error: function (result) {
+                                }
+                            });
+
+                        });
+                    });
+</script>

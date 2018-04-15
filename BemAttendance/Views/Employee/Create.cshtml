@@ -1,0 +1,111 @@
+﻿@model BEMAttendance.Models.UserEx
+@using BEMAttendance.Models
+<form class="form-horizontal" method="post" action="/employee/create">
+    <fieldset>
+        <legend>员工新增</legend>
+       @if ((VisitorRole)ViewData["VisitorRole"] == VisitorRole.Admin || (VisitorRole)ViewData["VisitorRole"] == VisitorRole.SubAdmin)
+       {
+            <text>
+                <script type="text/javascript">
+               $('#loginlink').attr('href', '/loginUI/logout');
+               $('#loginlink').text('注销');
+               $('#loginname').text('@ViewData["username"]');
+                </script>
+            </text>
+           if ((VisitorRole)ViewData["VisitorRole"] == VisitorRole.Admin)
+           {
+            <text>
+                <script type="text/javascript">
+                    $('#adminAdd').removeClass("hide");
+                    $('#packUpdate').removeClass("hide");
+                </script>
+            </text>
+           }
+       }
+       else
+       {
+        <script type="text/javascript">
+                  $('#loginlink').attr('href', '/loginUI/logout');
+                  $('#loginlink').text('注销');
+                  $('#loginname').text('@ViewData["username"]');
+                  $('#passwdLink').addClass("hide");
+                  $('#userSend').addClass("hide");
+                  $('#adminAdd').addClass("hide");
+                  $('#packUpdate').addClass("hide");
+        </script>
+       }
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.ValidationMessage("Title", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.CreateDate)
+            @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-lg-10">
+                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control col-lg-4",@maxlenght="30", @placeholder = "必填" } })
+                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.UserCard, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-lg-10">
+                @Html.EditorFor(model => model.UserCard, new { htmlAttributes = new { @class = "form-control", @maxlenght = "18", @placeholder = "必填" } })
+                @Html.ValidationMessageFor(model => model.UserCard, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.IDCard, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-lg-10">
+                @Html.EditorFor(model => model.IDCard, new { htmlAttributes = new { @class = "form-control", @maxlenght = "18"} })
+                @Html.ValidationMessageFor(model => model.IDCard, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @*@Html.LabelFor(model => model.Department1, htmlAttributes: new { @class = "control-label col-md-2" })*@
+            <label class="control-label col-lg-2">性别</label>
+            <div class="col-lg-10">
+                @*@Html.EditorFor(model => model.Department1, new { htmlAttributes = new { @class = "form-control", @maxlenght = "30", @placeholder = "必填" } })
+                @Html.ValidationMessageFor(model => model.Department1, "", new { @class = "text-danger" })*@
+                @Html.DropDownList("genderList", null, null, new { @class = "form-control", @id = "gender" })
+            </div>
+        </div>
+        <div class="form-group">
+            @*@Html.LabelFor(model => model.Department1, htmlAttributes: new { @class = "control-label col-md-2" })*@
+            @Html.LabelFor(model => model.Telephone, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-lg-10">
+               @Html.EditorFor(model => model.Telephone, new { htmlAttributes = new { @class = "form-control", @maxlenght = "11" } })
+               @Html.ValidationMessageFor(model => model.Telephone, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @*@Html.LabelFor(model => model.Department1, htmlAttributes: new { @class = "control-label col-md-2" })*@
+            <label class="control-label col-lg-2">部门名称</label>
+            <div class="col-lg-10">
+                @*@Html.EditorFor(model => model.Department1, new { htmlAttributes = new { @class = "form-control", @maxlenght = "30", @placeholder = "必填" } })
+                @Html.ValidationMessageFor(model => model.Department1, "", new { @class = "text-danger" })*@
+                @Html.DropDownList("dptName1List", null, null, new { @class = "form-control", @id = "Department1" })
+            </div>
+        </div>
+        <div class="form-group">
+            @*@Html.LabelFor(model => model.Department1Code, htmlAttributes: new { @class = "control-label col-md-2" })*@
+            <label class="control-label col-lg-2">部门编号</label>
+            <div class="col-lg-10">
+                @*@Html.EditorFor(model => model.Department1Code, new { htmlAttributes = new { @class = "form-control", @maxlenght = "18", @placeholder = "必填" } })
+                @Html.ValidationMessageFor(model => model.Department1Code, "", new { @class = "text-danger" })*@
+                @Html.TextBox("txtDptCode1", ViewData["dptCode1"], new { @class = "form-control", @id = "Department1Code", @readonly = "true" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-10 col-lg-offset-2">
+                <button class="btn btn-primary" type="submit">保存</button>
+            </div>
+        </div>
+    </fieldset>
+</form>
+<script>
+    $(function () {
+        $("#Department1").change(function () {
+            var dptName1 = $("#Department1").val();
+            $("#Department1Code").val(dptName1);
+        });
+    });
+</script>
+

@@ -1,0 +1,179 @@
+﻿@model  UpdatesPackage
+@using BEMAttendance.Models
+<script type="text/javascript">
+ function uploadDialogShow() {
+     $('#uploadDialog').load("/video/Upload");
+    }
+    $(document).ready(function () {
+        $(".empSelectAll").on("change", function (e)
+        {
+            var str = "#tbDevice input:checkbox";
+            if ($(this).is(":checked"))
+            {
+                $(str).each(function () {
+                    $(this).prop("checked", true);
+                });
+            }
+            else {
+                $(str).each(function () {
+                    $(this).prop("checked", false);
+                })
+            }
+        })
+    });
+    function getSubmit() {
+        var tbObj = document.getElementById("tbVersion");
+        if (tbObj.childNodes.length <= 1) {
+            $("#errorInfoV").text("视频未找到,请先上传");
+            $("#alertDiv").removeClass("hide");
+            $("#alertDiv").addClass("alert-danger");
+            return;
+        }
+        var checkData = "";
+        $("#tbDevice input:checkbox").each(function () {
+            if ($(this).is(':checked')) {
+                checkData = checkData + $(this).val() + ","
+            }
+        });
+        if (checkData == "") {
+            $("#errorInfoV").text("请勾选需要下发的设备，不能为空");
+            $("#alertDiv").removeClass("hide");
+            $("#alertDiv").addClass("alert-danger");
+            return;
+        }
+        $.ajax({
+            type: "post",
+            url: "video/Index",
+            data: { devData: checkData },
+            async: "false",
+            success: function (result) {
+                if (result == "OK") {
+                    $("#errorInfoV").text("视频下发成功");
+                    $("#alertDiv").removeClass("hide");
+                    $("#alertDiv").addClass("alert-success");
+                }
+                else {
+                    $("#errorInfoV").text(result);
+                    $("#alertDiv").removeClass("hide");
+                    $("#alertDiv").removeClass("alert-success");
+                    $("#alertDiv").addClass("alert-danger");
+                }
+            },
+            error: function (e) {
+                $("#errorInfoV").text(result.responseText);
+                $("#alertDiv").removeClass("hide");
+                $("#alertDiv").removeClass("alert-success");
+                $("#alertDiv").addClass("alert-danger");
+            }
+        });
+    }
+</script>
+<div class="container-fluid">
+    <div id="uploadDialog"></div>
+    <div class="row">
+        <div id="alertDiv" class="alert alert-dismissable hide">
+            <label class="control-label" id="errorInfoV"></label>
+        </div>
+    </div>
+    <div class="row">
+        <h3>视频文件</h3>
+        <div class="col-lg-6">
+            @if ((VisitorRole)ViewData["VisitorRole"] == VisitorRole.Admin || (VisitorRole)ViewData["VisitorRole"] == VisitorRole.SubAdmin)
+            {
+                <text>
+                    <script type="text/javascript">
+                        $('#loginlink').attr('href', '/loginUI/logout');
+                        $('#loginlink').text('注销');
+                        $('#loginname').text('@ViewData["username"]');
+                    </script>
+                </text>
+                if ((VisitorRole)ViewData["VisitorRole"] == VisitorRole.Admin)
+                {
+                    <text>
+                        <script type="text/javascript">
+                            $('#adminAdd').removeClass("hide");
+                            $('#packUpdate').removeClass("hide");
+                        </script>
+                    </text>
+                }
+            }
+            else
+            {
+                <script type="text/javascript">
+                  $('#loginlink').attr('href', '/loginUI/logout');
+                  $('#loginlink').text('注销');
+                  $('#loginname').text('@ViewData["username"]');
+                  $('#passwdLink').addClass("hide");
+                  $('#userSend').addClass("hide");
+                  $('#adminAdd').addClass("hide");
+                  $('#packUpdate').addClass("hide");
+                </script>
+            }
+            <div class="btn-group" style="margin-bottom:10px">
+                <button class="btn btn-default" onclick="uploadDialogShow()">上传视频文件</button>
+            </div>
+
+            <table id="packageList" class="table table-striped table-hover">
+                <tr>
+                    <th>视频名称</th>
+                    <th>上传日期</th>
+                </tr>
+                <tbody id="tbVersion">
+                    @{
+                        if (Model == null)
+                        {
+                            return;
+                        }
+                        if (Model.updateInfo != null)
+                        {
+                            <tr>
+                                <td>@Model.updateInfo.version</td>
+                                <td>@Model.updateInfo.uploadTime</td>
+                            </tr>
+                        }
+
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row" style="margin-top:10px">
+        <h3>设备列表</h3>
+        <div class="col-lg-4" style="margin-bottom:10px">
+            @if ((VisitorRole)ViewData["VisitorRole"] == VisitorRole.Admin || (VisitorRole)ViewData["VisitorRole"] == VisitorRole.SubAdmin)
+            {
+                <a class="btn btn-primary" style="vertical-align:middle" onclick="getSubmit()">视频下发</a>
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-8" style="overflow:auto;height:700px">
+            <table id="devlist" class="table table-striped table-hover">
+                <tr>
+                    <th><input type="checkbox" class="empSelectAll" /></th>
+                    <th>设备编号</th>
+                    <th>设备名称</th>
+                    <th>设备所在地</th>
+                    <th>设备管理员</th>
+                    <th>当前版本</th>
+                </tr>
+                <tbody id="tbDevice">
+                    @{
+                        foreach (var dev in Model.devices)
+                        {
+                            <tr>
+                                <td><input type="checkbox" value=@dev.DevCode /></td>
+                                <td>@dev.DevCode</td>
+                                <td>@dev.DevName</td>
+                                <td>@dev.DevAddress</td>
+                                <td>@dev.DevManager</td>
+                                <td>@dev.DevVersion</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

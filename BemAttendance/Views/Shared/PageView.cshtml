@@ -1,0 +1,65 @@
+﻿@using BEMAttendance.Models
+@model BEMAttendance.Models.PageModel
+@if (Model != null && Model.TotalPages != 0)
+{
+    <ul class="pagination">
+        @{
+            @Url.CreatePageLiTag(Model, Model.CurrentIndex - 1, false, Model.IsHasPrePage, "<<")
+            if (Model.TotalPages <= Model.DisplayMaxPages)
+            {
+                for (int i = 1; i < Model.TotalPages; i++)
+                {
+                    @Url.CreatePageLiTag(Model, i, i == Model.CurrentIndex);
+                }
+            }
+            else
+            {
+                if (Model.CurrentIndex - 1 < 5)
+                {
+                    for (int i = 1; i <= Model.DisplayMaxPages - 1; i++)
+                    {
+                        @Url.CreatePageLiTag(Model, i, i == Model.CurrentIndex);
+                    }
+                    @Url.CreatePageLiTag(Model, Model.CurrentIndex, false, false, "...");
+                }
+                else
+                {
+                    @Url.CreatePageLiTag(Model, 1);
+                    if (Model.CurrentIndex + (Model.DisplayMaxPages - 2) / 2 >= Model.TotalPages)
+                    {
+                        int page = Model.CurrentIndex - (Model.DisplayMaxPages - Model.TotalPages + Model.CurrentIndex - 1);
+
+                        if (page > 1)
+                        {
+                             @Url.CreatePageLiTag(Model, Model.CurrentIndex, false, false, "...");
+                        }
+
+                        for (int i = page + 1; i < Model.TotalPages; i++)
+                        {
+                            @Url.CreatePageLiTag(Model, i, i == Model.CurrentIndex);
+                        }
+                    }
+                    else
+                    {
+                        int page = Model.CurrentIndex - (Model.DisplayMaxPages - 2) / 2;
+
+                        if (page > 2)
+                        {
+                            @Url.CreatePageLiTag(Model, Model.CurrentIndex, false, false, "...");
+                        }
+
+                        for (int i = page; i < Model.CurrentIndex + (Model.DisplayMaxPages - 2) / 2; i++)
+                        {
+                             @Url.CreatePageLiTag(Model, i, i == Model.CurrentIndex);
+                        }
+                         @Url.CreatePageLiTag(Model, Model.CurrentIndex, false, false, "...");
+                    }
+
+                }
+            }
+
+     @Url.CreatePageLiTag(Model, Model.TotalPages, Model.TotalPages == Model.CurrentIndex)
+            @Url.CreatePageLiTag(Model, Model.CurrentIndex + 1, false, Model.IsHasNextPage, ">>")
+            }
+    </ul>
+            }

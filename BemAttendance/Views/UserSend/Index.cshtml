@@ -1,0 +1,395 @@
+﻿@using BEMAttendance.Models
+<style>
+    .panel-group {margin-bottom:8px}
+</style>
+<script type="text/javascript">
+    function getSubmit() {
+        var checkdata = "";
+        $(".departments input:checkbox").each(function () {
+            if ($(this).is(':checked')) {
+                checkdata = checkdata + $(this).val() + ","
+            }
+        });
+        if (checkdata == "") {
+            $("#errorInfo").text("请勾选待下发的名单信息，不能为空");
+            $("#alertDiv").removeClass("hide");
+            $("#alertDiv").addClass("alert-danger");
+            return;
+        }
+        var checkDev = "";
+        $(".deviceInfos input:checkbox").each(function () {
+            if ($(this).is(':checked')) {
+                checkDev = checkDev + $(this).val() + ","
+            }
+        });
+        if (checkDev == "") {
+            $("#errorInfo").text("请勾选目标设备，不能为空");
+            $("#alertDiv").removeClass("hide");
+            $("#alertDiv").addClass("alert-danger");
+            return;
+        }
+        $.ajax({
+            type: "post",
+            url: "/UserSend/Index",
+            data: { empData: checkdata, devData: checkDev },
+            async: "false",
+            success: function (result) {
+                if (result == "OK") {            
+                    window.location.href = "/UserSend/Index";
+                    // $("#alertDiv").removeClass("hide");
+                    //$("#alertDiv").removeClass("alert-danger");
+                    //$("#alertDiv").addClass("alert-success");
+                    //$("#errorInfo").text("下发成功");
+                }
+                else {
+                    $("#errorInfo").text(result);
+                    $("#alertDiv").removeClass("hide");
+                    $("#alertDiv").removeClass("alert-success");
+                    $("#alertDiv").addClass("alert-danger");
+                }
+            },
+            error: function (e) {
+                $("#errorInfo").text(result.responseText);
+                $("#alertDiv").removeClass("hide");
+                $("#alertDiv").removeClass("alert-success");
+                $("#alertDiv").addClass("alert-danger");
+            }
+
+        });
+    }
+    $(document).ready(function () {
+        $("#devSelectAll").on("change", function (e) {
+            if ($("#devSelectAll").is(":checked"))
+                {
+                    $('.deviceInfos input:checkbox').each(function () {
+                        $(this).prop("checked", true)
+                    });
+                }
+                else
+                {
+                    $('.deviceInfos input:checkbox').each(function () {
+                        $(this).prop('checked', false);
+                    });
+                }
+        });
+        $(".empSelectAll").on("change", function (e) {
+
+            var id = $(this).attr("value");
+            var str = "#" + id + " input:checkbox";
+            if ($(this).is(":checked")) {
+        
+                $(str).each(function () {
+                    $(this).prop("checked", true)
+                });
+            }
+            else {
+                $(str).each(function () {
+                    $(this).prop('checked', false);
+                });
+            }
+        });
+        $(".bindEmpSelectAll").on("change", function (e) {
+
+            var id = $(this).attr("value");
+            var str = "#" + id + " input:checkbox";
+            if ($(this).is(":checked")) {
+
+                $(str).each(function () {
+                    $(this).prop("checked", true)
+                });
+            }
+            else {
+                $(str).each(function () {
+                    $(this).prop('checked', false);
+                });
+            }
+        });
+        $("#bindEmpListAll").on("change", function (e) {
+            var str = "#divBindEmpAll input:checkbox";
+            if ($(this).is(":checked"))
+            {
+                $(str).each(function () {
+                    $(this).prop("checked", true)
+                });
+            }
+            else {
+                $(str).each(function () {
+                    $(this).prop('checked', false);
+                });
+            }
+        });
+        $("#empListAll").on("change", function (e) {
+            var str = "#divEmpAll input:checkbox";
+            if($(this).is(":checked"))
+            {
+                $(str).each(function () {
+                    $(this).prop("checked", true)
+                });
+            }
+            else
+            {
+                $(str).each(function () {
+                    $(this).prop('checked', false);
+                });
+            }
+        });
+    });
+    
+</script>
+<div class="container-fluid">
+    <legend>名单下发</legend>
+    <div class="row" style="margin-top:10px;margin-left:5px">
+        @if ((VisitorRole)ViewData["VisitorRole"] == VisitorRole.Admin|| (VisitorRole)ViewData["VisitorRole"] == VisitorRole.SubAdmin)
+        {
+            <text>
+                <script type="text/javascript">
+                        $('#loginlink').attr('href', '/loginUI/logout');
+                        $('#loginlink').text('注销');
+                        $('#loginname').text('@ViewData["username"]');
+                </script>
+            </text>
+        }
+        @if ((string)ViewData["username"] == "admin")
+            {
+            <text>
+                <script type="text/javascript">
+                        $('#adminAdd').removeClass("hide");
+                        $('#packUpdate').removeClass("hide");
+                </script>
+            </text>
+        }
+        <div class="well well-sm">
+            <h5>请在名单列勾选需要下发员工信息,并在右侧设备列表中勾选需要下发的目标设备</h5>
+            <h5>将相同的名单重复下发到同一台设备上会下发失败</h5>
+        </div>
+    </div>
+    <div class="row" style="margin-left:5px">
+        <div id="alertDiv" class="alert alert-dismissible hide">
+            <label class="control-label" id="errorInfo"></label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-4" id="divEmpAll">
+            <h4 style="padding-left:13px"> <input type="checkbox" id="empListAll"> 未下发名单列表</h4>
+            <!-- 利用data-target指定要折叠的分组列表 -->
+            @{
+                int i = 0;
+                List<CompanyItem> unbindlist = ViewData["notBindList"] as List<CompanyItem>;
+                if (unbindlist ==null||unbindlist.Count <= 0)
+                {
+                    <div class="alert alert-dismissible alert-info">
+                        <strong>当前没有未下发的名单信息</strong>
+                    </div>
+                }
+                else
+                {
+                    foreach (var item in unbindlist)
+                    {
+                        i++;
+                    <div class="panel-group" id="accordion">
+                        <div class="panel panel-default ">
+                            <div class="panel-heading" id="collapseListGroupHeading@{@i.ToString()} ">
+                                <h4 class="panel-title" data-parent="#accordion">
+                                    <input type="checkbox" class="empSelectAll" value="collapseListGroup@{@i.ToString()}"/>
+                                    @item.CompanyName
+                                    @if (item.subList == null || item.subList.Count == 0)
+                    {
+                                        <span class="badge" style="float:right">0</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge"  data-toggle="collapse" data-target="#collapseListGroup@{@i.ToString()} " style="float:right;cursor:pointer">@item.subList.Count</span>
+                                    }
+                                </h4>
+                            </div>
+                            @if (i == 1)
+                {
+                                <div id="collapseListGroup@{@i.ToString()}" class="panel-collapse collapse in">
+                                    @if (item.subList == null || item.subList.Count == 0)
+                {
+                    continue;
+                }
+                                    <div class="panel-body departments">
+                                        @foreach (var dpt in item.subList)
+                {
+                    var ckValue = dpt.EmpName + "=" + dpt.EmpCode;
+                                            <!-- 利用data-target指定URL -->
+                                            <div class="checkbox" style="margin-top:0px">
+                                                <label>
+                                                    <input type="checkbox" value="@ckValue"> @dpt.EmpName
+                                                </label>
+                                            </div>
+                                        }
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div id="collapseListGroup@{@i.ToString()}" class="panel-collapse collapse">
+                                        @if (item.subList == null || item.subList.Count == 0)
+                {
+                    continue;
+                }
+                                        <div class="panel-body departments">
+                                            @foreach (var dpt in item.subList)
+                {
+                    var ckValue = dpt.EmpName + "=" + dpt.EmpCode;
+                                                <!-- 利用data-target指定URL -->
+                                                <div class="checkbox" style="margin-top:0px">
+                                                    <label>
+                                                        <input type="checkbox" value="@ckValue"> @dpt.EmpName
+                                                    </label>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                        </div>
+                    </div>
+                }
+                }
+            }
+        </div>
+        <div class="col-lg-4" id="divBindEmpAll">
+            <h4 style="padding-left:13px"> <input type="checkbox" id="bindEmpListAll"> 已下发名单列表</h4>
+            @{
+                int j = 0;
+                List<CompanyItem> bindlist = ViewData["bindList"] as List<CompanyItem>;
+                if (bindlist == null || bindlist.Count <= 0)
+                {
+                    <div class="alert alert-dismissible alert-info">
+                        <strong>当前没有已下发的名单信息</strong>
+                    </div>
+                }
+                else
+                {
+                    foreach (var item in bindlist)
+                    {
+                        j++;
+                        <div class="panel-group" id="accordion">
+                            <div class="panel panel-default ">
+                                <div class="panel-heading" id="bindListGroupHeading@{@j.ToString()} ">
+                                    <h4 class="panel-title" data-parent="#accordion">
+                                        <input type="checkbox" class="bindEmpSelectAll" value="bindListGroupHeading@{@j.ToString()}" />
+                                        @item.CompanyName
+                                        @if (item.subList == null || item.subList.Count == 0)
+                                        {
+                                            <span class="badge" style="float:right">0</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge" data-toggle="collapse" data-target="#bindListGroupHeading@{@j.ToString()} " style="float:right;cursor:pointer">@item.subList.Count</span>
+                                        }
+                                    </h4>
+                                </div>
+                                @if (j == 1)
+                                {
+                                    <div id="bindListGroupHeading@{@j.ToString()}" class="panel-collapse collapse in">
+                                        @if (item.subList == null || item.subList.Count == 0)
+                                        {
+                                            continue;
+                                        }
+                                        <div class="panel-body departments">
+                                            @foreach (var dpt in item.subList)
+                                            {
+                                                var ckValue = dpt.EmpName + "=" + dpt.EmpCode;
+                                            <!-- 利用data-target指定URL -->
+                                                <div class="checkbox" style="margin-top:0px">
+                                                    <label>
+                                                        <input type="checkbox" value="@ckValue"> @dpt.EmpName
+                                                    </label>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                 }
+                                 else
+                            {
+                                <div id="bindListGroupHeading@{@j.ToString()}" class="panel-collapse collapse">
+                                    @if (item.subList == null || item.subList.Count == 0)
+                                    {
+                                        continue;
+                                    }
+                                    <div class="panel-body departments">
+                                        @foreach (var dpt in item.subList)
+                                        {
+                                            var ckValue = dpt.EmpName + "=" + dpt.EmpCode;
+                                                                        <!-- 利用data-target指定URL -->
+                                            <div class="checkbox" style="margin-top:0px">
+                                                <label>
+                                                    <input type="checkbox" value="@ckValue"> @dpt.EmpName
+                                                </label>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                            </div>
+                        </div>
+                     }
+                  }
+            }
+        </div>
+        <div class="col-lg-4">
+            <h4 style="padding-left:13px"> <input type="checkbox" id="devSelectAll"> 设备列表</h4>
+            <div class="panel-group" id="accordion">
+                <div class="panel panel-default">
+                    @*<div class="panel-heading" id="collapseListGroupHeading@{@i.ToString()}">
+                        <div class="checkbox" style="margin-top:0px;margin-bottom:0px">
+                            <label>
+                                <input type="checkbox" id="devSelectAll">考勤设备
+                            </label>
+
+                        </div>
+                    </div>*@
+
+                    <div  class="panel-collapse collapse in">
+                        <div class="panel-body deviceInfos">
+                            @{
+                                List<clientdevice> devices = ViewData["devList"] as List<clientdevice>;
+                                if (devices != null)
+                                {
+                                    foreach (var dev in devices)
+                                    {
+                                        var ckValue = dev.DevName + "=" + dev.DevCode;
+                                         <!-- 利用data-target指定URL -->
+                                            <div class="checkbox" style="margin-top:0px">
+                                                <label>
+                                                    <input type="checkbox" value="@ckValue"> @dev.DevName
+                                                </label>
+                                            </div>
+                                    }
+                                }
+                            }
+                            </div>  
+                        </div>
+                </div>
+            </div>
+            <div class="row">
+                <div style="text-align:center">
+                    @if (((VisitorRole)ViewData["VisitorRole"] == VisitorRole.Admin|| (VisitorRole)ViewData["VisitorRole"] == VisitorRole.SubAdmin))
+                    {
+                        <a class="btn btn-primary" style="vertical-align:middle" onclick="getSubmit()">名单下发</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-primary disabled" style="vertical-align:middle;" onclick="getSubmit()">名单下发</a>
+                    }
+                </div>
+                @if (ViewData["status"] != null)
+                {
+                    <text>
+                        <script type="text/javascript">
+                    $("#alertDiv").removeClass("hide");
+                    $("#alertDiv").removeClass("alert-danger");
+                    $("#alertDiv").addClass("alert-success");
+                    $("#errorInfo").text("下发成功");
+                        </script>
+                    </text>
+                }
+            </div>
+        </div>
+    </div>
+    
+</div>
+

@@ -1,0 +1,378 @@
+﻿@model List<BEMAttendance.Models.UserEx>
+@using BEMAttendance.Models
+@{
+    ViewBag.Title = "员工列表";
+}
+<script src="~/Scripts/spin.min.js"></script>
+<script type="text/javascript">
+
+    var opts = {
+        lines: 13, // 花瓣数目
+        length: 20, // 花瓣长度
+        width: 10, // 花瓣宽度
+        radius: 30, // 花瓣距中心半径
+        corners: 1, // 花瓣圆滑度 (0-1)
+        rotate: 0, // 花瓣旋转角度
+        direction: 1, // 花瓣旋转方向 1: 顺时针, -1: 逆时针
+        color: '#37A7E8', // 花瓣颜色
+        speed: 1, // 花瓣旋转速度
+        trail: 60, // 花瓣旋转时的拖影(百分比)
+        shadow: false, // 花瓣是否显示阴影
+        hwaccel: false, //spinner 是否启用硬件加速及高速旋转            
+        className: 'spinner', // spinner css 样式名称
+        zIndex: 2e9, // spinner的z轴 (默认是2000000000)
+        top: '35%', // spinner 相对父容器Top定位 单位 px
+        left:'50%'// spinner 相对父容器Left定位 单位 px
+    };
+
+    var spinner = new Spinner(opts);
+
+    $(document).ready(function () {
+
+        setInterval("RefreshStatus()", 5000);
+        $("#btnRemoveBindAll").bind("click", function () {
+            removeBindAll();
+        });
+        $("#btnRemoveBindSingle").bind("click", function () {
+            removeBind();
+        });
+    });
+    function RefreshStatus() {
+        var trList = $("#tbUser").children("tr");
+        for (var i = 0; i < trList.length; i++) {
+            var tdArr = trList.eq(i).find("td");  //获取所在行的列节点
+            var userCode = tdArr.eq(1).text();    //获取人员ID
+            $.ajax(
+                {
+                    url: "/Employee/GetUserStatus",
+                    type: "Get",
+                    async: true,
+                    data: { id: userCode },
+                    success: function (strvalue) {
+                        if (strvalue != "null") {
+                            var strs = new Array();
+                            strs = strvalue.split(';');
+                            if (strs.length > 0) {
+                                var status = strs[0].split(':')[1];
+                                var userID = "#" + strs[1].split(':')[1];
+                                if (status != "OK")  //离线
+                                {
+                                    $(userID).html("<span  class='label label-warning'>虹膜未注册 </span>");
+                                    $(userID + "time").html("");
+                                }
+                                else {
+                                    var regDate = strs[2].split('#')[1];
+                                    $(userID).html("<span  class='label label-success'>虹膜已注册</span>");
+                                    $(userID + "time").html(regDate);
+                                }
+                            }
+
+                        }
+                    }
+                });
+        }
+    }
+    //隐藏某项
+    function hideModal(obj)
+    {
+        $(obj).modal('hide');
+    }
+    function checkBind(obj)
+    {
+        $.ajax({
+            type: "Get",
+            url: "/Employee/GetBind?id=" + obj,
+            success: function (result) {
+                if (result == "admin") {
+                    $('#isadmin').modal('show');
+                }
+                else
+                {
+                    $('#userCode').val(obj);
+                    $('#confirm').modal('show');
+                }
+            }
+        });
+    }
+    function showRemoveAll() {
+        $('#confirmAll').modal('show');
+    }
+    function setSearch(obj)
+    {
+        var searchKey = $('#searchkey').val();
+        if (searchKey == null || searchKey == "") {
+            switch (obj) {
+                case 0:
+                    $('#searchkey').attr('placeholder', "查找全部...");
+                    break;
+                case 1:
+                    $('#searchkey').attr('placeholder', "查找职工号...");
+                    break;
+                case 2:
+                    $('#searchkey').attr('placeholder', "查找员工姓名...");
+                    break;
+                case 3:
+                    $('#searchkey').attr('placeholder', "查找身份证号...");
+                    break;
+                case 4:
+                    $('#searchkey').attr('placeholder', "查找部门名称...");
+                    break;
+            }
+        }
+        $('#searchType').val(obj);
+    }
+
+    function uploadDialogShow() {
+        $('#uploadDialog').load("/Employee/Upload");
+    }
+    function removeBind()
+    {
+        var devCode = $('#hideDevID').val();
+        var usercode = $('#userCode').val();
+        $.ajax({
+            type: "Get",
+            url: "/Device/RemoveBind?id=" + usercode + "&devCode=" + devCode,
+            beforeSend: function () {
+                //var target = document.getElementById("confirmFoot");
+                $("#confirmFoot_s").hide();
+                var target = $("#loadingDiv_s").get(0);
+                spinner.spin(target);
+            },
+            success: function (status) {
+                if (status == "OK")
+                {
+                    spinner.spin();
+                    $("#confirmFoot_s").show();
+                    window.location.reload(true);
+                }
+                else {
+                    $('#error').modal('show');
+                }
+            },
+            error:function(result)
+            {
+                $("#confirmFoot_s").show();
+                spinner.spin();
+                alert(result.responseText);
+            }
+        });
+    }
+    function removeBindAll() {
+        var devCode = $('#hideDevID').val();
+        $.ajax({
+            type: "Get",
+            timeout:15000,
+            url: "/Device/RemoveBindAll?devCode=" + devCode,
+            beforeSend: function () {
+                //var target = document.getElementById("confirmFoot");
+                $("#confirmFoot").hide();
+                var target = $("#loadingDiv").get(0);
+                spinner.spin(target);
+            },
+            success: function (status) {
+                if (status == "OK") {
+                    spinner.spin();
+                    $("#confirmFoot").show();
+                    window.location.reload(true);
+                }
+                else {
+                    $("#confirmFoot").show();
+                    spinner.spin();
+                    $('#error').modal('show');
+                }
+            },
+            error: function (result) {
+                spinner.spin();
+                alert(result.responseText);
+            }
+        });
+    }
+</script>
+
+<div id="confirm" class="modal fade">
+    <div class="modal-dialog" style="width: 300px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" aria-hidden="true" type="button" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>确定将该员工从此虹膜设备上移除?</p>
+                <input type="hidden" name="userCode" id="userCode" />
+            </div>
+            <div id="loadingDiv_s" style="text-align:center"></div>
+            <div id="confirmFoot_s" class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button id="btnRemoveBindSingle" type="button" class="btn btn-primary" @*onclick="removeBind()"*@>确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="isadmin" class="modal fade">
+    <div class="modal-dialog" style="width: 300px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" aria-hidden="true" type="button" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>该员工已被指定为管理员，不能直接移除，请先解除该员工管理员身份</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="confirmAll" class="modal fade">
+    <div class="modal-dialog" style="width: 350px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" aria-hidden="true" type="button" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>确定从该虹膜设备上移除所有非管理员名单信息?</p>
+                <input type="hidden" name="devCode" id="devCode" />
+            </div>
+            <div id="loadingDiv"style="text-align:center"></div>
+            <div id="confirmFoot" class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button id="btnRemoveBindAll" type="button" class="btn btn-primary" @*onclick="removeBindAll()"*@>确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="error" class="modal fade">
+    <div class="modal-dialog" style="width: 300px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" aria-hidden="true" type="button" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>移除失败</p>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8 col-md-7 col-sm-6">
+            <div class="col-lg-3">
+                <ul class="pager" style="margin-bottom:0px;margin-top:5px;">
+                    <li class="previous"><a href="/device">&larr; @ViewData["devName"]</a></li>
+                </ul>
+            </div>
+          @if ((VisitorRole)ViewData["VisitorRole"] == VisitorRole.Admin || (VisitorRole)ViewData["VisitorRole"] == VisitorRole.SubAdmin)
+            {
+                <div class="col-lg-3 col-lg-pull-1">
+                  <button  class="btn btn-default" onclick="showRemoveAll()">移除全部</button>
+                </div>
+                <text>
+                    <script type="text/javascript">
+                        $('#loginlink').attr('href', '/loginUI/logout');
+                        $('#loginlink').text('注销');
+                        $('#loginname').text('@ViewData["username"]');
+                    </script>
+                </text>
+              if ((VisitorRole)ViewData["VisitorRole"] == VisitorRole.Admin)
+              {
+                <text>
+                    <script type="text/javascript">
+                        $('#adminAdd').removeClass("hide");
+                        $('#packUpdate').removeClass("hide");
+                    </script>
+                </text>
+               }
+            }
+        </div>
+        <div class="col-lg-4 col-md-5 col-sm-6">
+            @{
+                var queryCondition = ViewData["requestData"] as EmployeeQueryCondition;
+                var queryType = (int)queryCondition.queryType;
+            }
+            <form id="searchform" name="searchform" action="/Device/GetDetail">
+                <div class="input-group" style="display:inline">
+                    <input type="text" id="hideSearchKey" class="hide" value="@{@queryCondition.searchkey}" />
+                    <input type="text" id="hideSearchType" class="hide" value="@{@queryType}" />
+                    <input type="text" id="hideDevID" name="id" class="hide" value="@ViewData["devCode"]"/>
+                    <input type="text" id="searchkey" name="searchkey" class="form-control" placeholder="查找…" maxlength="20" value="@{@queryCondition.searchkey}" />
+                    <input type="text" class="hide form-control" id="searchType" name="searchType" value="@{@queryType}" />
+                    <button class="btn btn-primary" style="border-bottom-left-radius:0px;border-top-left-radius:0px;" onclick="document.searchform.submit();">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row" style="margin-top:10px">
+        <table id="userlist" class="table table-striped table-hover ">
+            <tr>
+                <th>用户名</th>
+                <th>职工号</th>
+                <th>性别
+                <th>身份证号</th>
+                <th>手机号</th>
+                <th>部门名称</th>
+                <th>部门编号</th>
+                <th>状态</th>
+                <th>注册时间</th>
+               @if ((VisitorRole)ViewData["VisitorRole"] != VisitorRole.Guest)
+                {
+                    <th>操作</th>
+                }
+
+            </tr>
+            <tbody id="tbUser">
+                @{
+                    if (Model == null)
+                    {
+                        return;
+                    }
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.UserName</td>
+                            <td>@item.UserCard</td>
+                            <td>@item.Gender</td>
+                            <td>@item.IDCard</td>
+                            <td>@item.Telephone</td>
+                            <td>@item.Department1</td>
+                            <td>@item.Department1Code</td>
+                            @if (item.IrisEnrolled == true)
+                            {
+                                <td><span class="label label-success">虹膜已注册</span></td>
+                            }
+                            else
+                            {
+                                <td><span class="label label-warning">虹膜未注册</span></td>
+                            }
+                            @{
+                                if (item.CreateDate.HasValue)
+                                {
+                                    <td>@DateTime.Parse(item.CreateDate.ToString()).ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
+                            }
+                           @if ((VisitorRole)ViewData["VisitorRole"] != VisitorRole.Guest )
+                            {
+                                <td><a href="javascript:void(0) " onclick="checkBind('@item.UserCard')">移除</a></td>
+                            }
+                        </tr>
+                                }
+                }
+            </tbody>
+        </table>
+        @Html.Partial("PageView", ViewData["pagemodel"])
+    </div>
+</div>
+
+
+
+

@@ -1,0 +1,123 @@
+﻿@model BEMAttendance.Email
+<link rel="stylesheet" type="text/css" href="~/Content/jquery.datetimepicker.css" />
+<script src="~/Scripts/jquery.datetimepicker.js"></script>
+<script>
+    $(document).ready(function()
+    {
+        $('#datetime').val('@ViewData["timeNow"]');
+        var select = $('#Type').val();
+        if (select == 0)  //设备状态邮箱
+        {
+            $('#timePoint').removeClass('hide');
+            $('#timeInterval').addClass('hide');
+            $('#emailType').val('0');
+        }
+        else        //断线通知邮箱
+        {
+            $('#timeInterval').removeClass('hide');
+            $('#timePoint').addClass('hide');
+            $('#emailType').val('1');
+        }
+    });
+    function onSelectChange(obj)
+    {
+        if(obj==0)  //设备状态邮箱
+        {
+            $('#timePoint').removeClass('hide');
+            $('#timeInterval').addClass('hide');
+            $('#emailType').val('0');
+        }
+        else        //断线通知邮箱
+        {
+            $('#timeInterval').removeClass('hide');
+            $('#timePoint').addClass('hide');
+            $('#emailType').val('1');
+        }
+    }
+    function showDate(obj) {
+        $('#datetime').datetimepicker({ lang: 'ch', datepicker: false,value:$('#datetime').val(), step:10, format: 'H:i' });
+
+    }
+</script>
+    <form class="form-horizontal" method="post" action="/mail/Create">
+        <fieldset>
+            <legend>邮箱新增</legend>
+            @if ((bool)ViewData["isadmin"] == true)
+            {
+                <text>
+                    <script type="text/javascript">
+               $('#loginlink').attr('href', '/loginUI/logout');
+               $('#loginlink').text('注销');
+               $('#loginname').text('@ViewData["username"]');
+                    </script>
+                </text>
+            }
+            @if ((string)ViewData["username"] == "admin")
+            {
+                <text>
+                    <script type="text/javascript">
+                        $('#adminAdd').removeClass("hide");
+                    </script>
+                </text>
+            }
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.ValidationMessage("Title")
+                @Html.LabelFor(model=>model.Email1,htmlAttributes:new {@class="control-label col-lg-2"})
+                <div class="col-lg-10">
+                    @Html.EditorFor(model=>model.Email1,new { htmlAttributes=new { @class = "form-control", @maxlenght = "30", @placeholder = "必填" } })
+                    @Html.ValidationMessageFor(model=>model.Email1,"",new {@class="text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "control-label col-lg-2" })
+                <div class="col-lg-10">
+                    @if (Model != null)
+                    {
+                        if (Model.Type == 0)
+                        {
+                            <select class="form-control col-lg-4" id="Type" onchange="onSelectChange($('#Type').val())">
+                                <option value="0" selected>设备状态邮箱</option>
+                                <option value="1">断线通知邮箱</option>
+                            </select>
+                        }
+                        else
+                        {
+                            <select class="form-control col-lg-4" id="Type" onchange="onSelectChange($('#Type').val())">
+                                <option value="0">设备状态邮箱</option>
+                                <option value="1" selected>断线通知邮箱</option>
+                            </select>
+                        }
+                    }
+                    else
+                    {
+                        <select class="form-control col-lg-4" id="Type" onchange="onSelectChange($('#Type').val())">
+                                <option value="0" selected>设备状态邮箱</option>
+                                <option value="1">断线通知邮箱</option>
+                            </select>
+                    }
+                   
+                    @Html.EditorFor(m=>m.Type, new { htmlAttributes = new { @class = "form-control hide",@id="emailType"} })
+                </div>
+            </div>
+            <div class="form-group" id="timePoint">
+                @Html.LabelFor(model => model.TimePoint, htmlAttributes: new { @class = "control-label col-lg-2" })
+                <div class="col-lg-10">
+                    @Html.EditorFor(model => model.TimePoint, new { htmlAttributes = new {@readonly="readonly",@class = "form-control", @maxlenght = "30", @placeholder = "点击选择",@id="datetime",@onclick="showDate()" } })
+                    @Html.ValidationMessageFor(model => model.TimePoint, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group hide" id="timeInterval">
+                @Html.LabelFor(model => model.TimeInterval, htmlAttributes: new { @class = "control-label col-lg-2" })
+                <div class="col-lg-10">
+                    @Html.EditorFor(model => model.TimeInterval, new { htmlAttributes = new { @class = "form-control", @maxlenght = "30", @placeholder = "必填" } })
+                    @Html.ValidationMessageFor(model => model.TimeInterval, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-10 col-lg-offset-2">
+                    <button class="btn btn-primary" type="submit">保存</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>

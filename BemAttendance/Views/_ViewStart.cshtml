@@ -1,0 +1,13 @@
+﻿@{
+    var controller = ViewContext.RouteData.Values["controller"].ToString().ToLower();
+    var action = ViewContext.RouteData.Values["action"].ToString().ToLower();
+    string[] lController = new string[] { "course", "studentsattendance" };
+    if(lController.Contains(controller))
+    {
+        Layout = "~/Views/Shared/_LayoutV2.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+}
